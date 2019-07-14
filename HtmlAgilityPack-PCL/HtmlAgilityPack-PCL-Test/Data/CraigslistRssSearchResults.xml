@@ -1,0 +1,360 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<rdf:RDF
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns="http://purl.org/rss/1.0/"
+ xmlns:enc="http://purl.oclc.org/net/rss_2.0/enc#"
+ xmlns:ev="http://purl.org/rss/1.0/modules/event/"
+ xmlns:content="http://purl.org/rss/1.0/modules/content/"
+ xmlns:dcterms="http://purl.org/dc/terms/"
+ xmlns:syn="http://purl.org/rss/1.0/modules/syndication/"
+ xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xmlns:taxo="http://purl.org/rss/1.0/modules/taxonomy/"
+ xmlns:admin="http://webns.net/mvcb/"
+>
+
+  <channel rdf:about="http://tucson.craigslist.org/search/cto?bodies=0&#x26;amp;format=rss&#x26;amp;query=4runner&#x26;amp;s=0">
+    <title>craigslist tucson | cars &#x26;amp; trucks - by owner search "4runner"</title>
+    <link>http://tucson.craigslist.org/search/cto?bodies=0&#x26;amp;query=4runner&#x26;amp;s=0</link>
+    <description></description>
+    <dc:language>en-us</dc:language>
+    <dc:rights>&#x26;copy; 2014 &#x3C;span class="desktop"&#x3E;craigslist&#x3C;/span&#x3E;&#x3C;span class="mobile"&#x3E;CL&#x3C;/span&#x3E;</dc:rights>
+    <dc:publisher>robot@craigslist.org</dc:publisher>
+    <dc:creator>robot@craigslist.org</dc:creator>
+    <dc:source>http://tucson.craigslist.org/search/cto?bodies=0&#x26;amp;format=rss&#x26;amp;query=4runner&#x26;amp;s=0</dc:source>
+    <dc:title>craigslist tucson | cars &#x26;amp; trucks - by owner search "4runner"</dc:title>
+    <dc:type>Collection</dc:type>
+    <syn:updateBase>2014-06-14T21:51:09-07:00</syn:updateBase>
+    <syn:updateFrequency>1</syn:updateFrequency>
+    <syn:updatePeriod>hourly</syn:updatePeriod>
+    <items>
+      <rdf:Seq>
+        <rdf:li rdf:resource="http://tucson.craigslist.org/cto/4520917959.html" />
+        <rdf:li rdf:resource="http://tucson.craigslist.org/cto/4512730178.html" />
+        <rdf:li rdf:resource="http://tucson.craigslist.org/cto/4478769746.html" />
+        <rdf:li rdf:resource="http://tucson.craigslist.org/cto/4519947210.html" />
+        <rdf:li rdf:resource="http://tucson.craigslist.org/cto/4519762642.html" />
+        <rdf:li rdf:resource="http://tucson.craigslist.org/cto/4519469686.html" />
+        <rdf:li rdf:resource="http://tucson.craigslist.org/cto/4518506431.html" />
+        <rdf:li rdf:resource="http://tucson.craigslist.org/cto/4518001054.html" />
+        <rdf:li rdf:resource="http://tucson.craigslist.org/cto/4489217937.html" />
+        <rdf:li rdf:resource="http://tucson.craigslist.org/cto/4472219148.html" />
+        <rdf:li rdf:resource="http://tucson.craigslist.org/cto/4514822513.html" />
+        <rdf:li rdf:resource="http://tucson.craigslist.org/cto/4514275898.html" />
+        <rdf:li rdf:resource="http://tucson.craigslist.org/cto/4493235052.html" />
+        <rdf:li rdf:resource="http://tucson.craigslist.org/cto/4511322687.html" />
+        <rdf:li rdf:resource="http://tucson.craigslist.org/cto/4510994461.html" />
+        <rdf:li rdf:resource="http://tucson.craigslist.org/cto/4486887928.html" />
+        <rdf:li rdf:resource="http://tucson.craigslist.org/cto/4509609864.html" />
+        <rdf:li rdf:resource="http://tucson.craigslist.org/cto/4502318444.html" />
+        <rdf:li rdf:resource="http://tucson.craigslist.org/cto/4508934647.html" />
+        <rdf:li rdf:resource="http://tucson.craigslist.org/cto/4508002961.html" />
+        <rdf:li rdf:resource="http://tucson.craigslist.org/cto/4506249800.html" />
+        <rdf:li rdf:resource="http://tucson.craigslist.org/cto/4506244412.html" />
+        <rdf:li rdf:resource="http://tucson.craigslist.org/cto/4487403864.html" />
+        <rdf:li rdf:resource="http://tucson.craigslist.org/cto/4503913026.html" />
+        <rdf:li rdf:resource="http://tucson.craigslist.org/cto/4503486183.html" />
+      </rdf:Seq>
+    </items>
+  </channel>
+  <item rdf:about="http://tucson.craigslist.org/cto/4520917959.html">
+    <title><![CDATA[2007 4Runner SR5 &#x0024;13500]]></title>
+    <link>http://tucson.craigslist.org/cto/4520917959.html</link>
+    <dc:date>2014-06-14T15:55:30-07:00</dc:date>
+    <dc:language>en-us</dc:language>
+    <dc:rights>&#x26;copy; 2014 &#x3C;span class="desktop"&#x3E;craigslist&#x3C;/span&#x3E;&#x3C;span class="mobile"&#x3E;CL&#x3C;/span&#x3E;</dc:rights>
+    <dc:source>http://tucson.craigslist.org/cto/4520917959.html</dc:source>
+    <dc:title><![CDATA[2007 4Runner SR5 &#x0024;13500]]></dc:title>
+    <dc:type>text</dc:type>
+    <enc:enclosure resource="http://images.craigslist.org/00q0q_7i4NmC5TZLp_300x300.jpg" type="image/jpeg"/>
+    <dcterms:issued>2014-06-14T15:55:30-07:00</dcterms:issued>
+  </item>
+  <item rdf:about="http://tucson.craigslist.org/cto/4512730178.html">
+    <title><![CDATA[ 1984 Toyota 4runner 4x4 Rock Crawler 4.3l v6 &#x0024;4200]]></title>
+    <link>http://tucson.craigslist.org/cto/4512730178.html</link>
+    <dc:date>2014-06-14T12:13:15-07:00</dc:date>
+    <dc:language>en-us</dc:language>
+    <dc:rights>&#x26;copy; 2014 &#x3C;span class="desktop"&#x3E;craigslist&#x3C;/span&#x3E;&#x3C;span class="mobile"&#x3E;CL&#x3C;/span&#x3E;</dc:rights>
+    <dc:source>http://tucson.craigslist.org/cto/4512730178.html</dc:source>
+    <dc:title><![CDATA[ 1984 Toyota 4runner 4x4 Rock Crawler 4.3l v6 &#x0024;4200]]></dc:title>
+    <dc:type>text</dc:type>
+    <enc:enclosure resource="http://images.craigslist.org/00U0U_18Dr5gHmlMk_300x300.jpg" type="image/jpeg"/>
+    <dcterms:issued>2014-06-14T12:13:15-07:00</dcterms:issued>
+  </item>
+  <item rdf:about="http://tucson.craigslist.org/cto/4478769746.html">
+    <title><![CDATA[97 Toyota 4runner 4x4 v6 3.4 (Northwest Tucson) &#x0024;4800]]></title>
+    <link>http://tucson.craigslist.org/cto/4478769746.html</link>
+    <dc:date>2014-06-14T11:33:10-07:00</dc:date>
+    <dc:language>en-us</dc:language>
+    <dc:rights>&#x26;copy; 2014 &#x3C;span class="desktop"&#x3E;craigslist&#x3C;/span&#x3E;&#x3C;span class="mobile"&#x3E;CL&#x3C;/span&#x3E;</dc:rights>
+    <dc:source>http://tucson.craigslist.org/cto/4478769746.html</dc:source>
+    <dc:title><![CDATA[97 Toyota 4runner 4x4 v6 3.4 (Northwest Tucson) &#x0024;4800]]></dc:title>
+    <dc:type>text</dc:type>
+    <enc:enclosure resource="http://images.craigslist.org/00B0B_bLlMOxNES2R_300x300.jpg" type="image/jpeg"/>
+    <dcterms:issued>2014-06-14T11:33:10-07:00</dcterms:issued>
+  </item>
+  <item rdf:about="http://tucson.craigslist.org/cto/4519947210.html">
+    <title><![CDATA[1965 CHEVY C-10 GREAT SOLID TRUCK,LB,TRADE (nw tucson) &#x0024;2450]]></title>
+    <link>http://tucson.craigslist.org/cto/4519947210.html</link>
+    <dc:date>2014-06-14T05:23:09-07:00</dc:date>
+    <dc:language>en-us</dc:language>
+    <dc:rights>&#x26;copy; 2014 &#x3C;span class="desktop"&#x3E;craigslist&#x3C;/span&#x3E;&#x3C;span class="mobile"&#x3E;CL&#x3C;/span&#x3E;</dc:rights>
+    <dc:source>http://tucson.craigslist.org/cto/4519947210.html</dc:source>
+    <dc:title><![CDATA[1965 CHEVY C-10 GREAT SOLID TRUCK,LB,TRADE (nw tucson) &#x0024;2450]]></dc:title>
+    <dc:type>text</dc:type>
+    <enc:enclosure resource="http://images.craigslist.org/00G0G_2SRXRGNXuN8_300x300.jpg" type="image/jpeg"/>
+    <dcterms:issued>2014-06-14T05:23:09-07:00</dcterms:issued>
+  </item>
+  <item rdf:about="http://tucson.craigslist.org/cto/4519762642.html">
+    <title><![CDATA[1987 Toyota 4Runner  (Deming) &#x0024;2700]]></title>
+    <link>http://tucson.craigslist.org/cto/4519762642.html</link>
+    <dc:date>2014-06-13T21:40:18-07:00</dc:date>
+    <dc:language>en-us</dc:language>
+    <dc:rights>&#x26;copy; 2014 &#x3C;span class="desktop"&#x3E;craigslist&#x3C;/span&#x3E;&#x3C;span class="mobile"&#x3E;CL&#x3C;/span&#x3E;</dc:rights>
+    <dc:source>http://tucson.craigslist.org/cto/4519762642.html</dc:source>
+    <dc:title><![CDATA[1987 Toyota 4Runner  (Deming) &#x0024;2700]]></dc:title>
+    <dc:type>text</dc:type>
+    <enc:enclosure resource="http://images.craigslist.org/00I0I_6WgiU1mUr9g_300x300.jpg" type="image/jpeg"/>
+    <dcterms:issued>2014-06-13T21:40:18-07:00</dcterms:issued>
+  </item>
+  <item rdf:about="http://tucson.craigslist.org/cto/4519469686.html">
+    <title><![CDATA[2001 Dodge Ram 1500 4x4 (Morenci) &#x0024;6000]]></title>
+    <link>http://tucson.craigslist.org/cto/4519469686.html</link>
+    <dc:date>2014-06-13T17:54:12-07:00</dc:date>
+    <dc:language>en-us</dc:language>
+    <dc:rights>&#x26;copy; 2014 &#x3C;span class="desktop"&#x3E;craigslist&#x3C;/span&#x3E;&#x3C;span class="mobile"&#x3E;CL&#x3C;/span&#x3E;</dc:rights>
+    <dc:source>http://tucson.craigslist.org/cto/4519469686.html</dc:source>
+    <dc:title><![CDATA[2001 Dodge Ram 1500 4x4 (Morenci) &#x0024;6000]]></dc:title>
+    <dc:type>text</dc:type>
+    <enc:enclosure resource="http://images.craigslist.org/00h0h_jwhxzVHslBd_300x300.jpg" type="image/jpeg"/>
+    <dcterms:issued>2014-06-13T17:54:12-07:00</dcterms:issued>
+  </item>
+  <item rdf:about="http://tucson.craigslist.org/cto/4518506431.html">
+    <title><![CDATA[01 Toyota 4Runner limited 4x4 3.4 v6  (north tucson) &#x0024;6700]]></title>
+    <link>http://tucson.craigslist.org/cto/4518506431.html</link>
+    <dc:date>2014-06-13T07:37:21-07:00</dc:date>
+    <dc:language>en-us</dc:language>
+    <dc:rights>&#x26;copy; 2014 &#x3C;span class="desktop"&#x3E;craigslist&#x3C;/span&#x3E;&#x3C;span class="mobile"&#x3E;CL&#x3C;/span&#x3E;</dc:rights>
+    <dc:source>http://tucson.craigslist.org/cto/4518506431.html</dc:source>
+    <dc:title><![CDATA[01 Toyota 4Runner limited 4x4 3.4 v6  (north tucson) &#x0024;6700]]></dc:title>
+    <dc:type>text</dc:type>
+    <enc:enclosure resource="http://images.craigslist.org/00u0u_dVNEXNJxKaK_300x300.jpg" type="image/jpeg"/>
+    <dcterms:issued>2014-06-13T07:37:21-07:00</dcterms:issued>
+  </item>
+  <item rdf:about="http://tucson.craigslist.org/cto/4518001054.html">
+    <title><![CDATA[98 TOYOTA 4-RUNNER  4x4 (SOUTH) &#x0024;3600]]></title>
+    <link>http://tucson.craigslist.org/cto/4518001054.html</link>
+    <dc:date>2014-06-12T19:03:28-07:00</dc:date>
+    <dc:language>en-us</dc:language>
+    <dc:rights>&#x26;copy; 2014 &#x3C;span class="desktop"&#x3E;craigslist&#x3C;/span&#x3E;&#x3C;span class="mobile"&#x3E;CL&#x3C;/span&#x3E;</dc:rights>
+    <dc:source>http://tucson.craigslist.org/cto/4518001054.html</dc:source>
+    <dc:title><![CDATA[98 TOYOTA 4-RUNNER  4x4 (SOUTH) &#x0024;3600]]></dc:title>
+    <dc:type>text</dc:type>
+    <enc:enclosure resource="http://images.craigslist.org/00q0q_9Emyi1mqMMl_300x300.jpg" type="image/jpeg"/>
+    <dcterms:issued>2014-06-12T19:03:28-07:00</dcterms:issued>
+  </item>
+  <item rdf:about="http://tucson.craigslist.org/cto/4489217937.html">
+    <title><![CDATA[1998 DODGE DAKOTA EXT CAB SLT V6 3.9  NEW TIRES  (ORO VALLEY ) &#x0024;2500]]></title>
+    <link>http://tucson.craigslist.org/cto/4489217937.html</link>
+    <dc:date>2014-06-12T17:58:45-07:00</dc:date>
+    <dc:language>en-us</dc:language>
+    <dc:rights>&#x26;copy; 2014 &#x3C;span class="desktop"&#x3E;craigslist&#x3C;/span&#x3E;&#x3C;span class="mobile"&#x3E;CL&#x3C;/span&#x3E;</dc:rights>
+    <dc:source>http://tucson.craigslist.org/cto/4489217937.html</dc:source>
+    <dc:title><![CDATA[1998 DODGE DAKOTA EXT CAB SLT V6 3.9  NEW TIRES  (ORO VALLEY ) &#x0024;2500]]></dc:title>
+    <dc:type>text</dc:type>
+    <enc:enclosure resource="http://images.craigslist.org/00O0O_hMh1YSX5ssn_300x300.jpg" type="image/jpeg"/>
+    <dcterms:issued>2014-06-12T17:58:45-07:00</dcterms:issued>
+  </item>
+  <item rdf:about="http://tucson.craigslist.org/cto/4472219148.html">
+    <title><![CDATA[Toyota 85 4x4 extra cab  (Vail) &#x0024;3200]]></title>
+    <link>http://tucson.craigslist.org/cto/4472219148.html</link>
+    <dc:date>2014-06-11T11:41:27-07:00</dc:date>
+    <dc:language>en-us</dc:language>
+    <dc:rights>&#x26;copy; 2014 &#x3C;span class="desktop"&#x3E;craigslist&#x3C;/span&#x3E;&#x3C;span class="mobile"&#x3E;CL&#x3C;/span&#x3E;</dc:rights>
+    <dc:source>http://tucson.craigslist.org/cto/4472219148.html</dc:source>
+    <dc:title><![CDATA[Toyota 85 4x4 extra cab  (Vail) &#x0024;3200]]></dc:title>
+    <dc:type>text</dc:type>
+    <enc:enclosure resource="http://images.craigslist.org/00N0N_6XyHzulJMzw_300x300.jpg" type="image/jpeg"/>
+    <dcterms:issued>2014-06-11T11:41:27-07:00</dcterms:issued>
+  </item>
+  <item rdf:about="http://tucson.craigslist.org/cto/4514822513.html">
+    <title><![CDATA[Toyota 4runner 88 and 86 (east) &#x0024;2000]]></title>
+    <link>http://tucson.craigslist.org/cto/4514822513.html</link>
+    <dc:date>2014-06-10T22:58:00-07:00</dc:date>
+    <dc:language>en-us</dc:language>
+    <dc:rights>&#x26;copy; 2014 &#x3C;span class="desktop"&#x3E;craigslist&#x3C;/span&#x3E;&#x3C;span class="mobile"&#x3E;CL&#x3C;/span&#x3E;</dc:rights>
+    <dc:source>http://tucson.craigslist.org/cto/4514822513.html</dc:source>
+    <dc:title><![CDATA[Toyota 4runner 88 and 86 (east) &#x0024;2000]]></dc:title>
+    <dc:type>text</dc:type>
+    <enc:enclosure resource="http://images.craigslist.org/00G0G_9WKCSxB8Ra0_300x300.jpg" type="image/jpeg"/>
+    <dcterms:issued>2014-06-10T22:58:00-07:00</dcterms:issued>
+  </item>
+  <item rdf:about="http://tucson.craigslist.org/cto/4514275898.html">
+    <title><![CDATA[1994 Toytoa 4Runner V6 5-spd 4x4 (Cortaro and Thornydale) &#x0024;2000]]></title>
+    <link>http://tucson.craigslist.org/cto/4514275898.html</link>
+    <dc:date>2014-06-10T15:21:16-07:00</dc:date>
+    <dc:language>en-us</dc:language>
+    <dc:rights>&#x26;copy; 2014 &#x3C;span class="desktop"&#x3E;craigslist&#x3C;/span&#x3E;&#x3C;span class="mobile"&#x3E;CL&#x3C;/span&#x3E;</dc:rights>
+    <dc:source>http://tucson.craigslist.org/cto/4514275898.html</dc:source>
+    <dc:title><![CDATA[1994 Toytoa 4Runner V6 5-spd 4x4 (Cortaro and Thornydale) &#x0024;2000]]></dc:title>
+    <dc:type>text</dc:type>
+    <enc:enclosure resource="http://images.craigslist.org/00h0h_kmJ1tiT3W4M_300x300.jpg" type="image/jpeg"/>
+    <dcterms:issued>2014-06-10T15:21:16-07:00</dcterms:issued>
+  </item>
+  <item rdf:about="http://tucson.craigslist.org/cto/4493235052.html">
+    <title><![CDATA[Toyota 4runner (eastside) &#x0024;1500]]></title>
+    <link>http://tucson.craigslist.org/cto/4493235052.html</link>
+    <dc:date>2014-06-10T01:49:26-07:00</dc:date>
+    <dc:language>en-us</dc:language>
+    <dc:rights>&#x26;copy; 2014 &#x3C;span class="desktop"&#x3E;craigslist&#x3C;/span&#x3E;&#x3C;span class="mobile"&#x3E;CL&#x3C;/span&#x3E;</dc:rights>
+    <dc:source>http://tucson.craigslist.org/cto/4493235052.html</dc:source>
+    <dc:title><![CDATA[Toyota 4runner (eastside) &#x0024;1500]]></dc:title>
+    <dc:type>text</dc:type>
+    <enc:enclosure resource="http://images.craigslist.org/00p0p_i1E7R3EOU69_300x300.jpg" type="image/jpeg"/>
+    <dcterms:issued>2014-06-10T01:49:26-07:00</dcterms:issued>
+  </item>
+  <item rdf:about="http://tucson.craigslist.org/cto/4511322687.html">
+    <title><![CDATA[Toyota 4runner 86 (east) &#x0024;1200]]></title>
+    <link>http://tucson.craigslist.org/cto/4511322687.html</link>
+    <dc:date>2014-06-08T23:21:30-07:00</dc:date>
+    <dc:language>en-us</dc:language>
+    <dc:rights>&#x26;copy; 2014 &#x3C;span class="desktop"&#x3E;craigslist&#x3C;/span&#x3E;&#x3C;span class="mobile"&#x3E;CL&#x3C;/span&#x3E;</dc:rights>
+    <dc:source>http://tucson.craigslist.org/cto/4511322687.html</dc:source>
+    <dc:title><![CDATA[Toyota 4runner 86 (east) &#x0024;1200]]></dc:title>
+    <dc:type>text</dc:type>
+    <enc:enclosure resource="http://images.craigslist.org/01717_aQ8GUtaFewl_300x300.jpg" type="image/jpeg"/>
+    <dcterms:issued>2014-06-08T23:21:30-07:00</dcterms:issued>
+  </item>
+  <item rdf:about="http://tucson.craigslist.org/cto/4510994461.html">
+    <title><![CDATA[2010 Toyota 4Runner SR5 (Tucson) &#x0024;27499]]></title>
+    <link>http://tucson.craigslist.org/cto/4510994461.html</link>
+    <dc:date>2014-06-08T17:16:01-07:00</dc:date>
+    <dc:language>en-us</dc:language>
+    <dc:rights>&#x26;copy; 2014 &#x3C;span class="desktop"&#x3E;craigslist&#x3C;/span&#x3E;&#x3C;span class="mobile"&#x3E;CL&#x3C;/span&#x3E;</dc:rights>
+    <dc:source>http://tucson.craigslist.org/cto/4510994461.html</dc:source>
+    <dc:title><![CDATA[2010 Toyota 4Runner SR5 (Tucson) &#x0024;27499]]></dc:title>
+    <dc:type>text</dc:type>
+    <enc:enclosure resource="http://images.craigslist.org/00N0N_2hV1S1LHGQP_300x300.jpg" type="image/jpeg"/>
+    <dcterms:issued>2014-06-08T17:16:01-07:00</dcterms:issued>
+  </item>
+  <item rdf:about="http://tucson.craigslist.org/cto/4486887928.html">
+    <title><![CDATA[2001 Toyota 4Runner SR5 4x4 $8000 OBO  (Tucson) &#x0024;8000]]></title>
+    <link>http://tucson.craigslist.org/cto/4486887928.html</link>
+    <dc:date>2014-06-07T17:25:23-07:00</dc:date>
+    <dc:language>en-us</dc:language>
+    <dc:rights>&#x26;copy; 2014 &#x3C;span class="desktop"&#x3E;craigslist&#x3C;/span&#x3E;&#x3C;span class="mobile"&#x3E;CL&#x3C;/span&#x3E;</dc:rights>
+    <dc:source>http://tucson.craigslist.org/cto/4486887928.html</dc:source>
+    <dc:title><![CDATA[2001 Toyota 4Runner SR5 4x4 $8000 OBO  (Tucson) &#x0024;8000]]></dc:title>
+    <dc:type>text</dc:type>
+    <enc:enclosure resource="http://images.craigslist.org/00c0c_hSdM4AyLfat_300x300.jpg" type="image/jpeg"/>
+    <dcterms:issued>2014-06-07T17:25:23-07:00</dcterms:issued>
+  </item>
+  <item rdf:about="http://tucson.craigslist.org/cto/4509609864.html">
+    <title><![CDATA[99 Ford f-350  (Benson) &#x0024;10000]]></title>
+    <link>http://tucson.craigslist.org/cto/4509609864.html</link>
+    <dc:date>2014-06-07T17:14:15-07:00</dc:date>
+    <dc:language>en-us</dc:language>
+    <dc:rights>&#x26;copy; 2014 &#x3C;span class="desktop"&#x3E;craigslist&#x3C;/span&#x3E;&#x3C;span class="mobile"&#x3E;CL&#x3C;/span&#x3E;</dc:rights>
+    <dc:source>http://tucson.craigslist.org/cto/4509609864.html</dc:source>
+    <dc:title><![CDATA[99 Ford f-350  (Benson) &#x0024;10000]]></dc:title>
+    <dc:type>text</dc:type>
+    <enc:enclosure resource="http://images.craigslist.org/00X0X_lzmSQ7WpAaD_300x300.jpg" type="image/jpeg"/>
+    <dcterms:issued>2014-06-07T17:14:15-07:00</dcterms:issued>
+  </item>
+  <item rdf:about="http://tucson.craigslist.org/cto/4502318444.html">
+    <title><![CDATA[1993 4runner SR5 4x4 (Grant and Silverbell) &#x0024;3500]]></title>
+    <link>http://tucson.craigslist.org/cto/4502318444.html</link>
+    <dc:date>2014-06-07T15:56:29-07:00</dc:date>
+    <dc:language>en-us</dc:language>
+    <dc:rights>&#x26;copy; 2014 &#x3C;span class="desktop"&#x3E;craigslist&#x3C;/span&#x3E;&#x3C;span class="mobile"&#x3E;CL&#x3C;/span&#x3E;</dc:rights>
+    <dc:source>http://tucson.craigslist.org/cto/4502318444.html</dc:source>
+    <dc:title><![CDATA[1993 4runner SR5 4x4 (Grant and Silverbell) &#x0024;3500]]></dc:title>
+    <dc:type>text</dc:type>
+    <enc:enclosure resource="http://images.craigslist.org/00707_i0ufi1BblfP_300x300.jpg" type="image/jpeg"/>
+    <dcterms:issued>2014-06-07T15:56:29-07:00</dcterms:issued>
+  </item>
+  <item rdf:about="http://tucson.craigslist.org/cto/4508934647.html">
+    <title><![CDATA[1989 Toyota 4 runner 4x4  (nw tucson) &#x0024;3000]]></title>
+    <link>http://tucson.craigslist.org/cto/4508934647.html</link>
+    <dc:date>2014-06-07T09:54:15-07:00</dc:date>
+    <dc:language>en-us</dc:language>
+    <dc:rights>&#x26;copy; 2014 &#x3C;span class="desktop"&#x3E;craigslist&#x3C;/span&#x3E;&#x3C;span class="mobile"&#x3E;CL&#x3C;/span&#x3E;</dc:rights>
+    <dc:source>http://tucson.craigslist.org/cto/4508934647.html</dc:source>
+    <dc:title><![CDATA[1989 Toyota 4 runner 4x4  (nw tucson) &#x0024;3000]]></dc:title>
+    <dc:type>text</dc:type>
+    <enc:enclosure resource="http://images.craigslist.org/00I0I_9YNwCz9GVNg_300x300.jpg" type="image/jpeg"/>
+    <dcterms:issued>2014-06-07T09:54:15-07:00</dcterms:issued>
+  </item>
+  <item rdf:about="http://tucson.craigslist.org/cto/4508002961.html">
+    <title><![CDATA[85 Toyota Celica &#x0024;2000]]></title>
+    <link>http://tucson.craigslist.org/cto/4508002961.html</link>
+    <dc:date>2014-06-06T16:38:44-07:00</dc:date>
+    <dc:language>en-us</dc:language>
+    <dc:rights>&#x26;copy; 2014 &#x3C;span class="desktop"&#x3E;craigslist&#x3C;/span&#x3E;&#x3C;span class="mobile"&#x3E;CL&#x3C;/span&#x3E;</dc:rights>
+    <dc:source>http://tucson.craigslist.org/cto/4508002961.html</dc:source>
+    <dc:title><![CDATA[85 Toyota Celica &#x0024;2000]]></dc:title>
+    <dc:type>text</dc:type>
+    <enc:enclosure resource="http://images.craigslist.org/00W0W_5FvIdZaOTf2_300x300.jpg" type="image/jpeg"/>
+    <dcterms:issued>2014-06-06T16:38:44-07:00</dcterms:issued>
+  </item>
+  <item rdf:about="http://tucson.craigslist.org/cto/4506249800.html">
+    <title><![CDATA[Toyota 4Runner Limited Edition (Northwest Tucson) &#x0024;3500]]></title>
+    <link>http://tucson.craigslist.org/cto/4506249800.html</link>
+    <dc:date>2014-06-05T15:25:45-07:00</dc:date>
+    <dc:language>en-us</dc:language>
+    <dc:rights>&#x26;copy; 2014 &#x3C;span class="desktop"&#x3E;craigslist&#x3C;/span&#x3E;&#x3C;span class="mobile"&#x3E;CL&#x3C;/span&#x3E;</dc:rights>
+    <dc:source>http://tucson.craigslist.org/cto/4506249800.html</dc:source>
+    <dc:title><![CDATA[Toyota 4Runner Limited Edition (Northwest Tucson) &#x0024;3500]]></dc:title>
+    <dc:type>text</dc:type>
+    <enc:enclosure resource="http://images.craigslist.org/00w0w_hwrrhMMKxkj_300x300.jpg" type="image/jpeg"/>
+    <dcterms:issued>2014-06-05T15:25:45-07:00</dcterms:issued>
+  </item>
+  <item rdf:about="http://tucson.craigslist.org/cto/4506244412.html">
+    <title><![CDATA[1995 Toyota 4Runner SR5 4x4 (Tucson) &#x0024;750]]></title>
+    <link>http://tucson.craigslist.org/cto/4506244412.html</link>
+    <dc:date>2014-06-05T15:22:13-07:00</dc:date>
+    <dc:language>en-us</dc:language>
+    <dc:rights>&#x26;copy; 2014 &#x3C;span class="desktop"&#x3E;craigslist&#x3C;/span&#x3E;&#x3C;span class="mobile"&#x3E;CL&#x3C;/span&#x3E;</dc:rights>
+    <dc:source>http://tucson.craigslist.org/cto/4506244412.html</dc:source>
+    <dc:title><![CDATA[1995 Toyota 4Runner SR5 4x4 (Tucson) &#x0024;750]]></dc:title>
+    <dc:type>text</dc:type>
+    <enc:enclosure resource="http://images.craigslist.org/00W0W_bk2X5UJhPTt_300x300.jpg" type="image/jpeg"/>
+    <dcterms:issued>2014-06-05T15:22:13-07:00</dcterms:issued>
+  </item>
+  <item rdf:about="http://tucson.craigslist.org/cto/4487403864.html">
+    <title><![CDATA[2008 Toyota 4runner limited sport (casa grande) &#x0024;18900]]></title>
+    <link>http://tucson.craigslist.org/cto/4487403864.html</link>
+    <dc:date>2014-06-04T15:40:40-07:00</dc:date>
+    <dc:language>en-us</dc:language>
+    <dc:rights>&#x26;copy; 2014 &#x3C;span class="desktop"&#x3E;craigslist&#x3C;/span&#x3E;&#x3C;span class="mobile"&#x3E;CL&#x3C;/span&#x3E;</dc:rights>
+    <dc:source>http://tucson.craigslist.org/cto/4487403864.html</dc:source>
+    <dc:title><![CDATA[2008 Toyota 4runner limited sport (casa grande) &#x0024;18900]]></dc:title>
+    <dc:type>text</dc:type>
+    <enc:enclosure resource="http://images.craigslist.org/00e0e_cTNzdalEQUm_300x300.jpg" type="image/jpeg"/>
+    <dcterms:issued>2014-06-04T15:40:40-07:00</dcterms:issued>
+  </item>
+  <item rdf:about="http://tucson.craigslist.org/cto/4503913026.html">
+    <title><![CDATA[1998 Toyota 4Runner Limited (Grant &amp; Silverbell) &#x0024;3500]]></title>
+    <link>http://tucson.craigslist.org/cto/4503913026.html</link>
+    <dc:date>2014-06-04T09:35:01-07:00</dc:date>
+    <dc:language>en-us</dc:language>
+    <dc:rights>&#x26;copy; 2014 &#x3C;span class="desktop"&#x3E;craigslist&#x3C;/span&#x3E;&#x3C;span class="mobile"&#x3E;CL&#x3C;/span&#x3E;</dc:rights>
+    <dc:source>http://tucson.craigslist.org/cto/4503913026.html</dc:source>
+    <dc:title><![CDATA[1998 Toyota 4Runner Limited (Grant &amp; Silverbell) &#x0024;3500]]></dc:title>
+    <dc:type>text</dc:type>
+    <enc:enclosure resource="http://images.craigslist.org/00404_cRWP4glL8Th_300x300.jpg" type="image/jpeg"/>
+    <dcterms:issued>2014-06-04T09:35:01-07:00</dcterms:issued>
+  </item>
+  <item rdf:about="http://tucson.craigslist.org/cto/4503486183.html">
+    <title><![CDATA[96 honda prelude  (irvington ) &#x0024;3000]]></title>
+    <link>http://tucson.craigslist.org/cto/4503486183.html</link>
+    <dc:date>2014-06-04T04:56:09-07:00</dc:date>
+    <dc:language>en-us</dc:language>
+    <dc:rights>&#x26;copy; 2014 &#x3C;span class="desktop"&#x3E;craigslist&#x3C;/span&#x3E;&#x3C;span class="mobile"&#x3E;CL&#x3C;/span&#x3E;</dc:rights>
+    <dc:source>http://tucson.craigslist.org/cto/4503486183.html</dc:source>
+    <dc:title><![CDATA[96 honda prelude  (irvington ) &#x0024;3000]]></dc:title>
+    <dc:type>text</dc:type>
+    <enc:enclosure resource="http://images.craigslist.org/01111_7ob4XLeqsgo_300x300.jpg" type="image/jpeg"/>
+    <dcterms:issued>2014-06-04T04:56:09-07:00</dcterms:issued>
+  </item>
+</rdf:RDF>

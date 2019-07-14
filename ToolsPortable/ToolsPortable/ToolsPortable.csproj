@@ -1,0 +1,221 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{175ABC4A-4F7B-4CDB-AF1A-9CBF67A0601C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ToolsPortable</RootNamespace>
+    <AssemblyName>ToolsPortable</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Profile7</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>4.0</OldToolsVersion>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <SupportedCultures>es;qps-ploc</SupportedCultures>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Label="MultilingualAppToolkit">
+    <MultilingualAppToolkitVersion>4.0</MultilingualAppToolkitVersion>
+    <MultilingualFallbackLanguage>en</MultilingualFallbackLanguage>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release %28Android%29|AnyCPU'">
+    <OutputPath>bin\Release %28Android%29\</OutputPath>
+    <DefineConstants>TRACE;ANDROID</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug %28Android%29|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug %28Android%29\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;ANDROID</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="ApiKeyCombo.cs" />
+    <Compile Include="AsyncWorkerQueue.cs" />
+    <Compile Include="AVLTree.cs" />
+    <Compile Include="BareTaskBase.cs" />
+    <Compile Include="BatchEnumerable.cs" />
+    <Compile Include="BindableBase.cs" />
+    <Compile Include="BindableBaseWithPortableDispatcher.cs" />
+    <Compile Include="BindablePropertyWatcher.cs" />
+    <Compile Include="CalendarArray.cs" />
+    <Compile Include="Clonable.cs" />
+    <Compile Include="ColorHelper.cs" />
+    <Compile Include="CombinationsEnumerator.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="DateStrings.cs" />
+    <Compile Include="DateTools.cs" />
+    <Compile Include="EncryptionHelper.cs" />
+    <Compile Include="EnumerableFromEnumerator.cs" />
+    <Compile Include="ExceptionHelper.cs" />
+    <Compile Include="ExpirationDictionary.cs" />
+    <Compile Include="IDispatcher.cs" />
+    <Compile Include="IListExtensions.cs" />
+    <Compile Include="Indexing\BasicIndexer.cs" />
+    <Compile Include="Indexing\IndexedItemResult.cs" />
+    <Compile Include="Indexing\IndexedWord.cs" />
+    <Compile Include="Indexing\IndexedItemCombiner.cs" />
+    <Compile Include="Indexing\IndexedList.cs" />
+    <Compile Include="Indexing\MyIndexer.cs" />
+    <Compile Include="Indexing\SplitOptions.cs" />
+    <Compile Include="Indexing\Splitter.cs" />
+    <Compile Include="LocalizedDateTimeStrings.cs" />
+    <Compile Include="Locks\MyAsyncLock.cs" />
+    <Compile Include="Locks\MyAsyncReadWriteLock.cs" />
+    <Compile Include="Locks\MyReaderWriterLock.cs" />
+    <Compile Include="Locks\MySemaphore.cs" />
+    <Compile Include="Locks\MySemaphoreSlim.cs" />
+    <Compile Include="MyAppendedObservableLists.cs" />
+    <Compile Include="MyCollections.cs" />
+    <Compile Include="MyHeaderedObservableList.cs" />
+    <Compile Include="MyObservableCastedList.cs" />
+    <Compile Include="IMyObservableReadOnlyList.cs" />
+    <Compile Include="MyObservableList.cs" />
+    <Compile Include="MyObservableOfTypeList.cs" />
+    <Compile Include="MySublistsToFlatHeaderedList.cs" />
+    <Compile Include="OldHtml\HtmlObject.cs" />
+    <Compile Include="IEnumerableLinker.cs" />
+    <Compile Include="ImageRequest.cs" />
+    <Compile Include="IMyList.cs" />
+    <Compile Include="IMyStorage.cs" />
+    <Compile Include="IStorageItem.cs" />
+    <Compile Include="Language.cs" />
+    <Compile Include="MyHashSet.cs" />
+    <Compile Include="MyList.cs" />
+    <Compile Include="MyMath.cs" />
+    <Compile Include="PlainResponse.cs" />
+    <Compile Include="PortableLocalizedResources.cs" />
+    <Compile Include="PortableMessageDialog.cs" />
+    <Compile Include="Primitive.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Encryption.cs" />
+    <Compile Include="Resources\ToolsPortableResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ToolsPortableResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\ToolsPortableResources.es.Designer.cs">
+      <DependentUpon>ToolsPortableResources.es.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="SaveableBase.cs" />
+    <Compile Include="SqlDate.cs" />
+    <Compile Include="Sql\Column.cs" />
+    <Compile Include="StringDifference.cs" />
+    <Compile Include="StringEventArgs.cs" />
+    <Compile Include="StringQuery.cs" />
+    <Compile Include="StringTools.cs" />
+    <Compile Include="TextException.cs" />
+    <Compile Include="TimeoutTask.cs" />
+    <Compile Include="WeakEventHandler.cs" />
+    <Compile Include="WeakReferenceCache.cs" />
+    <Compile Include="WeakReferenceList.cs" />
+    <Compile Include="WebHelper.cs" />
+    <Compile Include="Web\ProgressStreamContent.cs" />
+    <Compile Include="Web\WebBasicBase.cs" />
+    <Compile Include="Web\WebErrors.cs" />
+    <Compile Include="Web\WebEvents.cs" />
+    <Compile Include="Web\WebHelper.cs" />
+    <Compile Include="Web\WebBase.cs" />
+    <Compile Include="Web\WebOptions.cs" />
+    <Compile Include="Web\WebTimeOffsetBase.cs" />
+    <Compile Include="WordEnumerator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\ToolsPortableResources.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ToolsPortableResources.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ToolsPortableResources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ToolsPortableResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Newtonsoft.Json.12.0.1\lib\portable-net45+win8+wp8+wpa81\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PCLCrypto, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d4421c8a4786956c, processorArchitecture=MSIL">
+      <HintPath>$(SolutionDir)\packages\PCLCrypto.2.0.147\lib\portable-net45+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10\PCLCrypto.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PInvoke.BCrypt, Version=0.5.0.0, Culture=neutral, PublicKeyToken=9e300f9f87f04a7a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\PInvoke.BCrypt.0.5.184\lib\portable-net45+win8+wpa81\PInvoke.BCrypt.dll</HintPath>
+    </Reference>
+    <Reference Include="PInvoke.Kernel32, Version=0.5.0.0, Culture=neutral, PublicKeyToken=9e300f9f87f04a7a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\PInvoke.Kernel32.0.5.184\lib\portable-net45+win8+wpa81\PInvoke.Kernel32.dll</HintPath>
+    </Reference>
+    <Reference Include="PInvoke.NCrypt, Version=0.5.0.0, Culture=neutral, PublicKeyToken=9e300f9f87f04a7a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\PInvoke.NCrypt.0.5.184\lib\portable-net45+win8+wpa81\PInvoke.NCrypt.dll</HintPath>
+    </Reference>
+    <Reference Include="PInvoke.Windows.Core, Version=0.5.0.0, Culture=neutral, PublicKeyToken=9e300f9f87f04a7a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\PInvoke.Windows.Core.0.5.184\lib\portable-net45+win8+wpa81\PInvoke.Windows.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Validation, Version=2.4.0.0, Culture=neutral, PublicKeyToken=2fc06f0d701809a7, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Validation.2.4.18\lib\portable-net45+win8+wp8+wpa81\Validation.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <XliffResource Include="MultilingualResources\ToolsPortable.es.xlf" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Multilingual App Toolkit\Microsoft.Multilingual.ResxResources.targets" Label="MultilingualAppToolkit" Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\Multilingual App Toolkit\Microsoft.Multilingual.ResxResources.targets')" />
+  <Target Name="MATPrerequisite" BeforeTargets="PrepareForBuild" Condition="!Exists('$(MSBuildExtensionsPath)\Microsoft\Multilingual App Toolkit\Microsoft.Multilingual.ResxResources.targets')" Label="MultilingualAppToolkit">
+    <Warning Text="$(MSBuildProjectFile) is Multilingual build enabled, but the Multilingual App Toolkit is unavailable during the build. If building with Visual Studio, please check to ensure that toolkit is properly installed." />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

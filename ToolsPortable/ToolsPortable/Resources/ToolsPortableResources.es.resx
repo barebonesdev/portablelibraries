@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="DateStrings_Friendly_InThePast" xml:space="preserve">
+    <value>EN EL PASADO</value>
+  </data>
+  <data name="DateStrings_Friendly_InTwoDays" xml:space="preserve">
+    <value>EN DOS DÍAS</value>
+  </data>
+  <data name="DateStrings_Friendly_Next" xml:space="preserve">
+    <value>SIGUIENTE</value>
+    <comment>As in "NEXT TUESDAY" (a day of week is considered "next" if it is 7-14 days away)</comment>
+  </data>
+  <data name="DateStrings_Friendly_This" xml:space="preserve">
+    <value>ESTE</value>
+    <comment>As in "THIS MONDAY" ("this" applies to the first upcoming day, within 7 days)</comment>
+  </data>
+  <data name="DateStrings_Friendly_Today" xml:space="preserve">
+    <value>HOY</value>
+  </data>
+  <data name="DateStrings_Friendly_Tomorrow" xml:space="preserve">
+    <value>MAÑANA</value>
+  </data>
+</root>

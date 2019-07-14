@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en" target-language="es" original="TOOLSPORTABLE/RESOURCES/TOOLSPORTABLERESOURCES.RESX" tool-id="MultilingualAppToolkit" product-name="n/a" product-version="n/a" build-num="n/a">
+    <header>
+      <tool tool-id="MultilingualAppToolkit" tool-name="Multilingual App Toolkit" tool-version="4.0.1605.0" tool-company="Microsoft" />
+    </header>
+    <body>
+      <group id="TOOLSPORTABLE/RESOURCES/TOOLSPORTABLERESOURCES.RESX" datatype="resx">
+        <trans-unit id="DateStrings_Friendly_InThePast" translate="yes" xml:space="preserve">
+          <source>IN THE PAST</source>
+          <target state="final">EN EL PASADO</target>
+        </trans-unit>
+        <trans-unit id="DateStrings_Friendly_InTwoDays" translate="yes" xml:space="preserve">
+          <source>IN TWO DAYS</source>
+          <target state="final">EN DOS DÍAS</target>
+        </trans-unit>
+        <trans-unit id="DateStrings_Friendly_Next" translate="yes" xml:space="preserve">
+          <source>NEXT</source>
+          <target state="final">SIGUIENTE</target>
+          <note from="MultilingualBuild" annotates="source" priority="2">As in "NEXT TUESDAY" (a day of week is considered "next" if it is 7-14 days away)</note>
+        </trans-unit>
+        <trans-unit id="DateStrings_Friendly_This" translate="yes" xml:space="preserve">
+          <source>THIS</source>
+          <target state="final">ESTE</target>
+          <note from="MultilingualBuild" annotates="source" priority="2">As in "THIS MONDAY" ("this" applies to the first upcoming day, within 7 days)</note>
+        </trans-unit>
+        <trans-unit id="DateStrings_Friendly_Today" translate="yes" xml:space="preserve">
+          <source>TODAY</source>
+          <target state="final">HOY</target>
+        </trans-unit>
+        <trans-unit id="DateStrings_Friendly_Tomorrow" translate="yes" xml:space="preserve">
+          <source>TOMORROW</source>
+          <target state="final">MAÑANA</target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

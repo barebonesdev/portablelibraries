@@ -1,0 +1,716 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using ToolsPortable;
+
+namespace BareMvvm.Core.ViewModels
+{
+#if DEBUG
+    internal static class ActiveViewModels
+    {
+        private static readonly WeakReferenceList<BaseViewModel> ACTIVE_VIEWMODELS = new WeakReferenceList<BaseViewModel>();
+
+        static ActiveViewModels()
+        {
+            OutputActiveViewModels();
+        }
+
+        public static void Track(BaseViewModel viewModel)
+        {
+            ACTIVE_VIEWMODELS.Add(viewModel);
+        }
+
+        private static string _prevResult;
+        private static async void OutputActiveViewModels()
+        {
+            while (true)
+            {
+                await System.Threading.Tasks.Task.Delay(1500);
+
+                string result = "";
+                int count = 0;
+                foreach (var v in ACTIVE_VIEWMODELS)
+                {
+                    result += v.GetType().Name + "\n";
+                    count++;
+                }
+                result = $"ACTIVE VIEW MODELS ({count})\n" + result;
+                if (_prevResult != result)
+                {
+                    _prevResult = result;
+                    System.Diagnostics.Debug.WriteLine(result);
+                }
+            }
+        }
+    }
+#endif
+
+    public abstract class BaseViewModel : BindableBase
+    {
+        public event EventHandler NavigatedTo;
+        public event EventHandler NavigatedFrom;
+        public event EventHandler ViewLostFocus;
+        public event EventHandler ViewFocused;
+        public event EventHandler<CancelEventArgs> BackRequested;
+
+        public bool IsCurrentNavigatedPage { get; private set; }
+        public bool IsFocused { get; private set; }
+
+        private WeakReference _nativeView;
+        public object GetNativeView()
+        {
+            return _nativeView?.Target;
+        }
+
+        public void SetNativeView(object value)
+        {
+            _nativeView = new WeakReference(value);
+        }
+
+        public BaseViewModel(BaseViewModel parent)
+        {
+            // Final content starts off as this, itself
+            _finalContent = this;
+            Parent = parent;
+
+#if DEBUG
+            ActiveViewModels.Track(this);
+#endif
+        }
+
+        public virtual string GetPageName()
+        {
+            string pageName = this.GetType().Name;
+            if (pageName.EndsWith("ViewModel"))
+            {
+                // Change "ViewModel" to "View"
+                pageName = pageName.Substring(0, pageName.Length - "Model".Length);
+            }
+
+            return pageName;
+        }
+
+        private RequestedBackButtonVisibility _thisBackButtonVisibility = RequestedBackButtonVisibility.Inherit;
+        /// <summary>
+        /// Refers specifically to the back button visibility of this view model, NOT its children or parents.
+        /// </summary>
+        public RequestedBackButtonVisibility ThisBackButtonVisibility
+        {
+            get { return _thisBackButtonVisibility; }
+
+            set
+            {
+                if (_thisBackButtonVisibility != value)
+                {
+                    SetProperty(ref _thisBackButtonVisibility, value, "ThisBackButtonVisibility");
+                    FinalBackButtonVisibility = GetFinalBackButtonVisibility();
+                }
+            }
+        }
+
+        private RequestedBackButtonVisibility _finalBackButtonVisibility = RequestedBackButtonVisibility.Inherit;
+        /// <summary>
+        /// Reflects desired back button visibility based on the descendants and this item.
+        /// </summary>
+        public RequestedBackButtonVisibility FinalBackButtonVisibility
+        {
+            get { return _finalBackButtonVisibility; }
+            set { SetProperty(ref _finalBackButtonVisibility, value, "FinalBackButtonVisibility"); }
+        }
+
+        private bool _isLoaded;
+        public bool IsLoaded
+        {
+            get { return _isLoaded; }
+            private set { SetProperty(ref _isLoaded, value, "IsLoaded"); }
+        }
+
+        private Task _loadAsyncTask;
+        public async Task LoadAsync()
+        {
+            if (_loadAsyncTask != null)
+            {
+                await _loadAsyncTask;
+                return;
+            }
+            
+            _loadAsyncTask = LoadAsyncOverride();
+            await _loadAsyncTask;
+
+            IsLoaded = true;
+        }
+
+        protected virtual Task LoadAsyncOverride()
+        {
+            return Task.FromResult(true);
+        }
+
+        private BareMvvm.Core.Windows.PortableAppWindow _appWindow;
+        public void SetOwningWindow(BareMvvm.Core.Windows.PortableAppWindow window)
+        {
+            _appWindow = window;
+        }
+
+        /// <summary>
+        /// Recursively finds the app window
+        /// </summary>
+        /// <returns></returns>
+        public Windows.PortableAppWindow GetAppWindow()
+        {
+            return GetRootParent()._appWindow;
+        }
+
+        public PortableDispatcher Dispatcher
+        {
+            get { return GetAppWindow().Dispatcher; }
+        }
+
+        public BaseViewModel Parent { get; protected set; }
+
+        /// <summary>
+        /// Recursively finds the topmost parent.
+        /// </summary>
+        /// <returns></returns>
+        public BaseViewModel GetRootParent()
+        {
+            if (Parent != null)
+                return Parent.GetRootParent();
+
+            return this;
+        }
+
+        public T FindAncestor<T>() where T : BaseViewModel
+        {
+            if (Parent == null)
+                return null;
+
+            if (Parent is T)
+                return Parent as T;
+
+            return Parent.FindAncestor<T>();
+        }
+
+        /// <summary>
+        /// Returns true if was able to go back. Cascades upwards towards parents.
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool GoBack()
+        {
+            if (BackRequested != null)
+            {
+                var args = new CancelEventArgs();
+                BackRequested(this, args);
+                if (args.Cancel)
+                {
+                    return true;
+                }
+            }
+
+            if (Parent == null)
+                return false;
+
+            return Parent.GoBack();
+        }
+
+        /// <summary>
+        /// Cascades upwards towards parents.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public virtual bool RemoveViewModel(BaseViewModel model)
+        {
+            if (Parent == null)
+                return false;
+
+            return Parent.RemoveViewModel(model);
+        }
+
+        /// <summary>
+        /// Removes the current view model
+        /// </summary>
+        public void RemoveViewModel()
+        {
+            RemoveViewModel(this);
+        }
+
+        /// <summary>
+        /// Tries to remove the current view model under the handle user interaction lock. Won't throw an exception.
+        /// </summary>
+        public async void TryRemoveViewModelViaUserInteraction()
+        {
+            try
+            {
+                await HandleUserInteractionAsync("RemoveViewModel", delegate
+                {
+                    RemoveViewModel();
+                });
+            }
+            catch (Exception ex)
+            {
+                ExceptionHelper.ReportHandledException(ex);
+            }
+        }
+
+        protected virtual BaseViewModel GetChildContent() { return null; }
+
+        /// <summary>
+        /// Returns the lower-most current content
+        /// </summary>
+        /// <returns></returns>
+        public BaseViewModel GetFinalContent()
+        {
+            var child = GetChildContent();
+            if (child != null)
+                return child.GetFinalContent();
+
+            return this;
+        }
+
+        private BaseViewModel _finalContent;
+        /// <summary>
+        /// Returns the lower-most current content, whatever the user is looking at right now.
+        /// Supports change notifications via PropertyChanged.
+        /// If this model is the final content and doesn't have further children, it returns this.
+        /// </summary>
+        public BaseViewModel FinalContent
+        {
+            get { return _finalContent; }
+            set { SetProperty(ref _finalContent, value, nameof(FinalContent)); }
+        }
+
+        public virtual IEnumerable<BaseViewModel> GetChildren()
+        {
+            return new BaseViewModel[0];
+        }
+
+        /// <summary>
+        /// Recursively gets all descendants
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<BaseViewModel> GetDescendants()
+        {
+            foreach (var c in GetChildren())
+            {
+                yield return c;
+
+                foreach (var innerC in c.GetDescendants())
+                {
+                    yield return innerC;
+                }
+            }
+        }
+
+        private RequestedBackButtonVisibility GetFinalBackButtonVisibility()
+        {
+            // Get the child
+            var child = GetChildContent();
+            if (child != null)
+            {
+                // Ask it to find out the final visibility
+                RequestedBackButtonVisibility childRequestedVisibility = child.GetFinalBackButtonVisibility();
+
+                // If it's something absolute, use that
+                if (childRequestedVisibility != RequestedBackButtonVisibility.Inherit)
+                    return childRequestedVisibility;
+            }
+
+            // Otherwise return this item's visibility
+            return ThisBackButtonVisibility;
+        }
+
+        private BaseViewModel _currChild;
+        private PropertyChangedEventHandler _childPropertyChangedHandler;
+        protected void TriggerChildContentChanged(BaseViewModel newContent)
+        {
+            if (_currChild != null && _childPropertyChangedHandler != null)
+            {
+                // Stop listening to previous child's event
+                _currChild.PropertyChanged -= _childPropertyChangedHandler;
+            }
+
+            // Get the new child
+            _currChild = newContent;
+
+            if (_currChild != null)
+            {
+                // Listen to the new child's event
+                if (_childPropertyChangedHandler == null)
+                {
+                    _childPropertyChangedHandler = new WeakEventHandler<PropertyChangedEventArgs>(_currChild_PropertyChanged).Handler;
+                }
+                _currChild.PropertyChanged += _childPropertyChangedHandler;
+
+                // And also update final back button visibility
+                UpdateFinalContent();
+                UpdateFinalBackButtonVisibility();
+            }
+
+            else
+            {
+                // Otherwise, we don't have any content anymore, meaning that we're the final child.
+                // So we still need to update back visibility
+                UpdateFinalContent();
+                UpdateFinalBackButtonVisibility();
+            }
+        }
+
+        private BaseViewModel _currVisibleContent;
+        private PropertyChangedEventHandler _currVisibleContentPropertyChangedHandler;
+        protected void TriggerVisibleContentChanged()
+        {
+            if (_currVisibleContent != null && _currVisibleContentPropertyChangedHandler != null)
+            {
+                // Stop listening to previous child's event
+                _currVisibleContent.PropertyChanged -= _currVisibleContentPropertyChangedHandler;
+            }
+
+            // Get the new child
+            _currVisibleContent = GetChildContent();
+
+            if (_currVisibleContent != null)
+            {
+                // Listen to the new child's event
+                if (_currVisibleContentPropertyChangedHandler == null)
+                {
+                    _currVisibleContentPropertyChangedHandler = new WeakEventHandler<PropertyChangedEventArgs>(_currVisibleContent_PropertyChanged).Handler;
+                }
+                _currVisibleContent.PropertyChanged += _currVisibleContentPropertyChangedHandler;
+
+                UpdateFinalContent();
+            }
+
+            else
+            {
+                UpdateFinalContent();
+            }
+        }
+
+        private void _currChild_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(FinalBackButtonVisibility):
+                    UpdateFinalBackButtonVisibility();
+                    break;
+            }
+        }
+
+        private void _currVisibleContent_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(FinalContent):
+                    UpdateFinalContent();
+                    break;
+            }
+        }
+
+        private void UpdateFinalContent()
+        {
+            FinalContent = GetFinalContent();
+        }
+
+        private void UpdateFinalBackButtonVisibility()
+        {
+            FinalBackButtonVisibility = GetFinalBackButtonVisibility();
+        }
+
+        public virtual void ShowPopup(BaseViewModel viewModel)
+        {
+            GetPopupViewModelHost().ShowPopup(viewModel);
+        }
+
+        public PagedViewModelWithPopups GetPopupViewModelHost()
+        {
+            return FindAncestor<PagedViewModelWithPopups>();
+        }
+
+        /// <summary>
+        /// Happens as a result of the view becoming the current view
+        /// </summary>
+        public virtual void OnViewFocused()
+        {
+            IsFocused = true;
+            ViewFocused?.Invoke(this, new EventArgs());
+
+            // Send event down to child too
+            GetChildContent()?.OnViewFocused();
+        }
+
+        /// <summary>
+        /// Happens as a result of the view no longer being the current view (popup appeared, or page navigated)
+        /// </summary>
+        public virtual void OnViewLostFocus()
+        {
+            IsFocused = false;
+            ViewLostFocus?.Invoke(this, new EventArgs());
+        }
+        
+        /// <summary>
+        /// Happens as a result of a page navigation (doesn't occur for new popups)
+        /// </summary>
+        public virtual void OnNavigatedTo()
+        {
+            IsCurrentNavigatedPage = true;
+            NavigatedTo?.Invoke(this, new EventArgs());
+        }
+
+        /// <summary>
+        /// Happens as a result of a page navigation (doesn't occur for new popups)
+        /// </summary>
+        public virtual void OnNavigatedFrom()
+        {
+            IsCurrentNavigatedPage = false;
+            NavigatedFrom?.Invoke(this, new EventArgs());
+        }
+
+        private class AsyncUserInteraction
+        {
+            public BaseViewModel SourceViewModel { get; private set; }
+            public object Identifier { get; private set; }
+            private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+            public Task Task => _completionSource.Task;
+            public bool IsCanceled { get; private set; }
+            private TaskCompletionSource<bool> _completionSource = new TaskCompletionSource<bool>();
+
+            private Func<CancellationToken, Task> _operation;
+
+            public AsyncUserInteraction(BaseViewModel sourceViewModel, object identifier, Func<CancellationToken, Task> operation)
+            {
+                SourceViewModel = sourceViewModel;
+                Identifier = identifier;
+                _operation = operation;
+            }
+
+            private bool _started = false;
+            public async void StartOperation()
+            {
+                if (IsCanceled)
+                {
+                    throw new InvalidOperationException("Interaction is already canceled");
+                }
+
+                if (_started)
+                {
+                    throw new InvalidOperationException("Interaction is already started");
+                }
+
+                _started = true;
+
+                try
+                {
+                    await _operation(_cancellationTokenSource.Token);
+                    _completionSource.TrySetResult(true);
+                }
+                catch (Exception ex)
+                {
+                    _completionSource.TrySetException(ex);
+                }
+            }
+
+            public void Cancel()
+            {
+                if (!_cancellationTokenSource.IsCancellationRequested)
+                {
+                    _cancellationTokenSource.Cancel();
+                    IsCanceled = true;
+                }
+            }
+        }
+
+        private AsyncUserInteraction _currentInteraction;
+        private AsyncUserInteraction _newInteraction;
+
+        protected virtual async Task<bool> HandleUserInteractionAsync(BaseViewModel sourceViewModel, object identifier, Func<CancellationToken, Task> operation)
+        {
+            // Let parent handle operation
+            if (Parent != null)
+            {
+                return await Parent.HandleUserInteractionAsync(sourceViewModel, identifier, operation);
+            }
+
+            // Note: No need to lock anything, since user interactions will always be on UI thread
+
+            var thisInteraction = new AsyncUserInteraction(sourceViewModel, identifier, operation);
+
+            if (_currentInteraction != null)
+            {
+                // If duplicate of current, merge with that
+                if (HandleDuplicateUserInteraction(_currentInteraction, thisInteraction, out Task<bool> answerCurrent))
+                {
+                    return await answerCurrent;
+                }
+
+                // If duplicate of next new, merge with that
+                if (_newInteraction != null && HandleDuplicateUserInteraction(_newInteraction, thisInteraction, out Task<bool> answerNew))
+                {
+                    return await answerNew;
+                }
+
+                // Cancel the task
+                _currentInteraction.Cancel();
+
+                _newInteraction = thisInteraction;
+
+                try
+                {
+                    // Wait to see if it cancels, succeeds, or fails
+                    await _currentInteraction.Task;
+
+                    // Task has succeeded regardless of cancellation, so don't invoke the new operation
+                    return false;
+                }
+
+                catch
+                {
+                    // Task has successfully been canceled, or it failed, either way, continue with new operation
+                    _currentInteraction = null;
+                }
+
+                // Make sure a subsequent request didn't come in and replace this one
+                if (_newInteraction != thisInteraction)
+                {
+                    return false;
+                }
+
+                _newInteraction = null;
+            }
+
+            // Start the operation first (it could throw an exception, don't want to assign current interaction unless we actually successfully started)
+            thisInteraction.StartOperation();
+
+            // Now store that current interaction
+            _currentInteraction = thisInteraction;
+
+            // And then when the operation is done, we clear current
+            try
+            {
+                return await HandleCompletingUserInteractionAsync(_currentInteraction);
+            }
+            finally
+            {
+                if (thisInteraction == _currentInteraction)
+                {
+                    _currentInteraction = null;
+                }
+            }
+        }
+
+        public Task<bool> HandleUserInteractionAsync(object identifier, Action operation)
+        {
+            return HandleUserInteractionAsync(identifier, (cancellationToken) =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                operation();
+
+                return Task.FromResult(true);
+            });
+        }
+
+        private static bool HandleDuplicateUserInteraction(AsyncUserInteraction existing, AsyncUserInteraction incoming, out Task<bool> existingAnswer)
+        {
+            if (existing.SourceViewModel == incoming.SourceViewModel && existing.Identifier == incoming.Identifier && !existing.IsCanceled && !incoming.IsCanceled)
+            {
+                existingAnswer = HandleCompletingUserInteractionAsync(existing);
+                return true;
+            }
+
+            existingAnswer = null;
+            return false;
+        }
+
+        private static async Task<bool> HandleCompletingUserInteractionAsync(AsyncUserInteraction interaction)
+        {
+            try
+            {
+                await interaction.Task;
+                return true;
+            }
+            catch (OperationCanceledException)
+            {
+                // Potentially expected if task was canceled
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Must be called from the UI thread.
+        /// </summary>
+        /// <param name="identifier"></param>
+        /// <param name="operation"></param>
+        public virtual Task<bool> HandleUserInteractionAsync(object identifier, Func<CancellationToken, Task> operation)
+        {
+            return HandleUserInteractionAsync(this, identifier, operation);
+        }
+
+        private List<MyBinding> _bindings = new List<MyBinding>();
+
+        protected TFinal GetBindedValue<TFinal>(INotifyPropertyChanged source, string sourcePropertyName, Func<TFinal> convert, [CallerMemberName]string targetPropertyName = null)
+        {
+            var existing = _bindings.FirstOrDefault(i => i.Source == source && i.SourcePropertyName == sourcePropertyName);
+            if (existing == null)
+            {
+                existing = new MyBinding<TFinal>(source, sourcePropertyName, NotifyPropertyChanged, targetPropertyName, convert);
+                _bindings.Add(existing);
+            }
+            return (TFinal)existing.Value;
+        }
+
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            OnPropertyChanged(propertyName);
+        }
+
+        private abstract class MyBinding
+        {
+            public INotifyPropertyChanged Source { get; protected set; }
+            public string SourcePropertyName { get; protected set; }
+            public object Value { get; protected set; }
+        }
+
+        private class MyBinding<TFinal> : MyBinding
+        {
+            private Func<TFinal> _convert;
+            private BindablePropertyWatcher _propertyWatcher;
+            private Action<string> _notifyPropertyChanged;
+            private string _targetPropertyName;
+
+            public MyBinding(INotifyPropertyChanged source, string sourcePropertyName, Action<string> notifyPropertyChanged, string targetPropertyName, Func<TFinal> convert)
+            {
+                Source = source;
+                SourcePropertyName = sourcePropertyName;
+                _notifyPropertyChanged = notifyPropertyChanged;
+                _targetPropertyName = targetPropertyName;
+                _convert = convert;
+                _propertyWatcher = new BindablePropertyWatcher(source, sourcePropertyName, OnPropertyChanged);
+
+                UpdateValue();
+            }
+
+            private void OnPropertyChanged()
+            {
+                object original = Value;
+                UpdateValue();
+                object newValue = Value;
+
+                if (!object.Equals(original, newValue))
+                {
+                    _notifyPropertyChanged(_targetPropertyName);
+                }
+            }
+
+            private void UpdateValue()
+            {
+                TFinal finalValue = _convert();
+                Value = finalValue;
+            }
+        }
+    }
+}
