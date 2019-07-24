@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,12 +14,6 @@ namespace ToolsPortable
     public class WebHelper
     {
         private static HttpClient _client = new HttpClient();
-
-        public enum Serializer
-        {
-            JsonNET,
-            DataContractJson
-        }
 
         //private HttpWebRequest _req;
 
@@ -44,19 +37,14 @@ namespace ToolsPortable
         /// <param name="postData"></param>
         /// <param name="apiKey"></param>
         /// <returns></returns>
-        public static async Task<T> Download<K, T>(string url, K postData, ApiKeyCombo apiKey, Serializer serializer = Serializer.DataContractJson)
+        public static async Task<T> Download<K, T>(string url, K postData, ApiKeyCombo apiKey)
         {
-            return await Download<K, T>(url, postData, apiKey, serializer, CancellationToken.None);
+            return await Download<K, T>(url, postData, apiKey, CancellationToken.None);
         }
 
         public static async Task<T> Download<K, T>(string url, K postData, ApiKeyCombo apiKey, CancellationToken cancellationToken)
         {
-            return await Download<K, T>(url, postData, apiKey, Serializer.DataContractJson, cancellationToken);
-        }
-
-        public static async Task<T> Download<K, T>(string url, K postData, ApiKeyCombo apiKey, Serializer serializer, CancellationToken cancellationToken)
-        {
-            return await new WebHelper().DownloadWithCancel<K, T>(url, postData, apiKey, serializer, cancellationToken);
+            return await new WebHelper().DownloadWithCancel<K, T>(url, postData, apiKey, cancellationToken);
         }
 
         /// <summary>
@@ -68,12 +56,12 @@ namespace ToolsPortable
         /// <param name="postData"></param>
         /// <param name="apiKey"></param>
         /// <returns></returns>
-        public async Task<T> DownloadWithCancel<K, T>(string url, K postData, ApiKeyCombo apiKey, Serializer serializer = Serializer.DataContractJson)
+        public async Task<T> DownloadWithCancel<K, T>(string url, K postData, ApiKeyCombo apiKey)
         {
-            return await DownloadWithCancel<K, T>(url, postData, apiKey, serializer, CancellationToken.None);
+            return await DownloadWithCancel<K, T>(url, postData, apiKey, CancellationToken.None);
         }
 
-        public async Task<T> DownloadWithCancel<K, T>(string url, K postData, ApiKeyCombo apiKey, Serializer serializer, CancellationToken cancellationToken)
+        public async Task<T> DownloadWithCancel<K, T>(string url, K postData, ApiKeyCombo apiKey, CancellationToken cancellationToken)
         {
             if (IsCancelled)
                 return default(T);
@@ -84,7 +72,7 @@ namespace ToolsPortable
             {
                 if (postData != null)
                 {
-                    request.Content = GeneratePostData(request, postData, apiKey, serializer);
+                    request.Content = GeneratePostData(request, postData, apiKey);
                     
                     cancellationToken.ThrowIfCancellationRequested();
                 }
@@ -196,7 +184,7 @@ namespace ToolsPortable
             return str;
         }
 
-        private static StreamContent GeneratePostData<K>(HttpRequestMessage request, K postData, ApiKeyCombo apiKey, Serializer serializer)
+        private static StreamContent GeneratePostData<K>(HttpRequestMessage request, K postData, ApiKeyCombo apiKey)
         {
             Stream postStream = new MemoryStream();
             string hashedData = null;
@@ -211,7 +199,7 @@ namespace ToolsPortable
 
                 else
                 {
-                    serialize(postStream, postData, serializer);
+                    serialize(postStream, postData);
                     postStream.Position = 0;
                 }
 
@@ -247,26 +235,16 @@ namespace ToolsPortable
             return content;
         }
 
-        private static void serialize(Stream stream, object data, Serializer serializer)
+        private static void serialize(Stream stream, object data)
         {
-            switch (serializer)
-            {
-                case Serializer.DataContractJson:
-                    new DataContractJsonSerializer(data.GetType()).WriteObject(stream, data);
-                    break;
-
-                case Serializer.JsonNET:
-
-                    StreamWriter writer = new StreamWriter(stream);
-                    new JsonSerializer().Serialize(writer, data);
-                    writer.Flush();
+            StreamWriter writer = new StreamWriter(stream);
+            new JsonSerializer().Serialize(writer, data);
+            writer.Flush();
 
 #if DEBUG
-                    stream.Position = 0;
-                    Debug.WriteLine(new StreamReader(stream).ReadToEnd());
+            stream.Position = 0;
+            Debug.WriteLine(new StreamReader(stream).ReadToEnd());
 #endif
-                    break;
-            }
         }
     }
 }

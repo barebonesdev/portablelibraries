@@ -69,7 +69,6 @@ namespace ToolsPortable
             // WebException means things like DNS name resolution error, connection timeout, network unreachable, etc
             // 0x80072EFF means some internal stream and file access stuff failed, not very common but nothing I can do
             return ex is System.Net.Http.HttpRequestException
-                || ex is System.Net.WebException
                 || ExceptionHelper.IsHResult(ex, 0x80072EFF);
         }
 
