@@ -9,7 +9,7 @@ namespace ToolsPortable
 {
     public class WeakEventHandler : WeakEventHandler<EventArgs>
     {
-#if DEBUG
+#if ANDROID && DEBUG
         public static Action ObjectDisposedAction { get; set; }
 
         public static void InvokeObjectDisposedAction()
