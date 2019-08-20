@@ -31,10 +31,9 @@ namespace ToolsPortable.Test
 
             await Task.Delay(1500);
             Assert.AreEqual(1, first.Result);
-
-            await Task.Delay(500);
             Assert.IsFalse(second.IsCompleted);
-            await Task.Delay(500);
+
+            await Task.Delay(1000);
             Assert.AreEqual(2, second.Result);
 
             var third = simpleQueue.QueueAsync(async delegate
@@ -75,11 +74,10 @@ namespace ToolsPortable.Test
 
             await Task.Delay(1500);
             Assert.AreEqual(1, first.Result);
-
-            await Task.Delay(500);
             Assert.IsFalse(second.IsCompleted);
             Assert.IsFalse(secondReplacement.IsCompleted);
-            await Task.Delay(500);
+
+            await Task.Delay(1000);
             Assert.AreEqual(2, second.Result);
             Assert.AreEqual(2, secondReplacement.Result);
 
@@ -101,7 +99,7 @@ namespace ToolsPortable.Test
 
             await Task.Delay(500);
             Assert.IsFalse(secondButAlreadyRunning.IsCompleted);
-            await Task.Delay(500);
+            await Task.Delay(1000);
             Assert.AreEqual(222, secondButAlreadyRunning.Result);
         }
     }
