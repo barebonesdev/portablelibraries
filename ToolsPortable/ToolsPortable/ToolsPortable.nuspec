@@ -7,7 +7,7 @@
         <authors>BareBones Dev</authors>
         <owners>BareBones Dev</owners>
         <projectUrl>https://github.com/barebonesdev/portablelibraries/tree/master/ToolsPortable</projectUrl>
-        <licenseUrl>https://github.com/barebonesdev/portablelibraries/blob/master/LICENSE</licenseUrl>
+        <license type="expression">GPL-3.0-only</license>
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
         <description>Portable tools and helpers often used in my projects</description>
         <copyright>Copyright ©  2012</copyright>
