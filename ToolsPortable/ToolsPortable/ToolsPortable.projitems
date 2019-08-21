@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>3d17d997-9151-4699-a6b4-723ff6fefc95</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>ToolsPortable</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ApiKeyCombo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AsyncWorkerQueue.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AVLTree.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BareTaskBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BatchEnumerable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BindableBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BindableBaseWithPortableDispatcher.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BindablePropertyWatcher.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CalendarArray.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Clonable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ColorHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CombinationsEnumerator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DateStrings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DateTools.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Encryption.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EncryptionHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EnumerableFromEnumerator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ExceptionHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ExpirationDictionary.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IDispatcher.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IEnumerableLinker.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IListExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ImageRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IMyList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IMyObservableReadOnlyList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IMyStorage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Indexing\BasicIndexer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Indexing\IndexedItemCombiner.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Indexing\IndexedItemResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Indexing\IndexedList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Indexing\IndexedWord.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Indexing\MyIndexer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Indexing\SplitOptions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Indexing\Splitter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IStorageItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Language.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LocalizedDateTimeStrings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Locks\MyAsyncLock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Locks\MyAsyncReadWriteLock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Locks\MyReaderWriterLock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Locks\MySemaphore.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Locks\MySemaphoreSlim.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MyAppendedObservableLists.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MyCollections.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MyHashSet.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MyHeaderedObservableList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MyList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MyMath.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MyObservableCastedList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MyObservableList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MyObservableOfTypeList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MySublistsToFlatHeaderedList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OldHtml\HtmlObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PlainResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PortableLocalizedResources.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PortableMessageDialog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Primitive.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resources\ToolsPortableResources.Designer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resources\ToolsPortableResources.es.Designer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resources\ToolsPortableResources.qps-ploc.Designer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SaveableBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SqlDate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Sql\Column.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StringDifference.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StringEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StringQuery.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StringTools.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TextException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TimeoutTask.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeakEventHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeakReferenceCache.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeakReferenceList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WebHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Web\ProgressStreamContent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Web\WebBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Web\WebBasicBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Web\WebErrors.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Web\WebEvents.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Web\WebHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Web\WebOptions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Web\WebTimeOffsetBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WordEnumerator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)MultilingualResources\ToolsPortable.es.xlf" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\ToolsPortableResources.es.resx" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\ToolsPortableResources.resx" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>08ebd6d1-71ee-4ddf-ac67-1f1308c08730</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>BareMvvm.Core</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)App\PortableApp.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BaseViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\PagedViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\PagedViewModelWithPopups.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\RequestedBackButtonVisibility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows\INativeAppWindow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows\PortableAppWindow.cs" />
+  </ItemGroup>
+</Project>

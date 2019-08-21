@@ -9,7 +9,7 @@ namespace ToolsPortable
 {
     public class WeakEventHandler : WeakEventHandler<EventArgs>
     {
-#if ANDROID && DEBUG
+#if __ANDROID__ && DEBUG
         public static Action ObjectDisposedAction { get; set; }
 
         public static void InvokeObjectDisposedAction()
@@ -47,13 +47,13 @@ namespace ToolsPortable
                 object target = _targetReference.Target;
                 if (target != null)
                 {
-#if ANDROID
+#if __ANDROID__
                     try
                     {
 #endif
                         _methodInfo.Invoke(target, new object[] { sender, e });
                         return;
-#if ANDROID
+#if __ANDROID__
                     }
 
                     catch (Exception ex)
