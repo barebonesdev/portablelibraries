@@ -52,6 +52,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="AssertHelper.cs" />
     <Compile Include="TestAsyncWorkerQueue.cs" />
     <Compile Include="TestCachedComputation.cs" />
     <Compile Include="TestMyAsyncLock.cs" />

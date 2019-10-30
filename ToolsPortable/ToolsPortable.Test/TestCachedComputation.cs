@@ -28,7 +28,7 @@ namespace ToolsPortable.Test
             obj.CostPerPassenger = 10;
 
             Assert.AreEqual(0, m_cachedComputationExecutions);
-            Assert.AreEqual(new string[] { nameof(obj.Passengers), nameof(obj.CostPerPassenger) }, m_propertiesChanged.ToArray());
+            AssertHelper.AreSequenceEqual(new string[] { nameof(obj.Passengers), nameof(obj.CostPerPassenger) }, m_propertiesChanged.ToArray());
 
             Clear();
 
@@ -50,7 +50,7 @@ namespace ToolsPortable.Test
             obj.Passengers = 3;
 
             Assert.AreEqual(1, m_cachedComputationExecutions);
-            Assert.AreEqual(new string[] { nameof(obj.Passengers), nameof(obj.TotalCostEstimate) }, m_propertiesChanged.ToArray());
+            AssertHelper.AreSequenceEqual(new string[] { nameof(obj.Passengers), nameof(obj.TotalCostEstimate) }, m_propertiesChanged.ToArray());
 
             Clear();
 
@@ -65,7 +65,7 @@ namespace ToolsPortable.Test
             obj.CostPerPassenger = 9;
 
             Assert.AreEqual(1, m_cachedComputationExecutions);
-            Assert.AreEqual(new string[] { nameof(obj.CostPerPassenger) }, m_propertiesChanged.ToArray());
+            AssertHelper.AreSequenceEqual(new string[] { nameof(obj.CostPerPassenger) }, m_propertiesChanged.ToArray());
 
             Clear();
 
@@ -80,14 +80,14 @@ namespace ToolsPortable.Test
             obj.Passengers = 4;
             obj.Passengers = 5;
 
-            Assert.AreEqual(2, m_cachedComputationExecutions);
-            Assert.AreEqual(new string[] { nameof(obj.Passengers), nameof(obj.Passengers) }, m_propertiesChanged.ToArray());
+            Assert.AreEqual(1, m_cachedComputationExecutions);
+            AssertHelper.AreSequenceEqual(new string[] { nameof(obj.Passengers), nameof(obj.TotalCostEstimate), nameof(obj.Passengers) }, m_propertiesChanged.ToArray());
 
             Clear();
 
-            // But then when I request, it should be correct, with no computations or notifications
+            // But then when I request, it should be correct, with 1 computation (since dependent changed twice) and no notifications
             Assert.AreEqual(50, obj.TotalCostEstimate);
-            Assert.AreEqual(0, m_cachedComputationExecutions);
+            Assert.AreEqual(1, m_cachedComputationExecutions);
             Assert.AreEqual(0, m_propertiesChanged.Count);
 
             Clear();
@@ -96,7 +96,7 @@ namespace ToolsPortable.Test
             obj.Passengers = 6;
 
             Assert.AreEqual(1, m_cachedComputationExecutions);
-            Assert.AreEqual(new string[] { nameof(obj.Passengers), nameof(obj.TotalCostEstimate) }, m_propertiesChanged.ToArray());
+            AssertHelper.AreSequenceEqual(new string[] { nameof(obj.Passengers), nameof(obj.TotalCostEstimate) }, m_propertiesChanged.ToArray());
         }
 
         [TestMethod]
@@ -125,7 +125,7 @@ namespace ToolsPortable.Test
             obj.Passengers = 2;
 
             Assert.AreEqual(1, m_cachedComputationExecutions);
-            Assert.AreEqual(new string[] { nameof(obj.Passengers) }, m_propertiesChanged.ToArray());
+            AssertHelper.AreSequenceEqual(new string[] { nameof(obj.Passengers) }, m_propertiesChanged.ToArray());
 
             Clear();
 
@@ -133,13 +133,13 @@ namespace ToolsPortable.Test
             obj.CostPerPassenger = 10;
 
             Assert.AreEqual(1, m_cachedComputationExecutions);
-            Assert.AreEqual(new string[] { nameof(obj.CostPerPassenger), nameof(obj.TotalCostEstimate) }, m_propertiesChanged.ToArray());
+            AssertHelper.AreSequenceEqual(new string[] { nameof(obj.CostPerPassenger), nameof(obj.TotalCostEstimate) }, m_propertiesChanged.ToArray());
 
             Clear();
 
-            // Accessing it should only trigger computation
+            // Accessing it shouldn't even trigger computation, since it was already computed to send out the notification
             Assert.AreEqual(20, obj.TotalCostEstimate);
-            Assert.AreEqual(1, m_cachedComputationExecutions);
+            Assert.AreEqual(0, m_cachedComputationExecutions);
             Assert.AreEqual(0, m_propertiesChanged.Count);
 
             Clear();

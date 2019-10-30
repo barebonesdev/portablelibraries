@@ -228,7 +228,7 @@ namespace ToolsPortable
                 {
                     m_isUpToDate = false;
                     var currVal = m_currentValue;
-                    var newVal = GetValue();
+                    var newVal = GetValue(); // This will set the value and uptodate=true
                     if (!object.Equals(currVal, newVal))
                     {
                         // Change this back to false, so that we can see if anyone actually asks for the new value again,
@@ -238,6 +238,10 @@ namespace ToolsPortable
                         // Notify it was changed
                         m_parent.OnPropertyChanged(m_propertyName);
                     }
+                }
+                else
+                {
+                    m_isUpToDate = false;
                 }
             }
         }
