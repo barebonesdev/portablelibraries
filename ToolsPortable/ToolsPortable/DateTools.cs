@@ -148,5 +148,20 @@ namespace ToolsPortable
         {
             return Last(day).ToString("dddd");
         }
+
+        public static int DaysAhead(DayOfWeek dayInFuture, DayOfWeek dayNow)
+        {
+            int intDayInFuture = (int)dayInFuture;
+            int intDayNow = (int)dayNow;
+
+            if (intDayInFuture >= intDayNow)
+            {
+                return intDayInFuture - intDayNow;
+            }
+
+            intDayInFuture += 7;
+
+            return intDayInFuture - intDayNow;
+        }
     }
 }
