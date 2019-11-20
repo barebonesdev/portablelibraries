@@ -36,6 +36,44 @@ namespace BareMvvm.Core.ViewModels
             return list;
         }
 
+        public event EventHandler<bool> CurrentPopupAllowsLightDismissChanged;
+
+        private bool _currentPopupAllowsLightDismiss = true;
+        private bool _subscribedToCurrentPopupAllowsLightDismiss = false;
+        /// <summary>
+        /// Will send out change events
+        /// </summary>
+        public bool CurrentPopupAllowsLightDismiss
+        {
+            get
+            {
+                if (!_subscribedToCurrentPopupAllowsLightDismiss)
+                {
+                    _subscribedToCurrentPopupAllowsLightDismiss = true;
+
+                    if (Popups.Count > 0)
+                    {
+                        HandlePopupAllowsLightDismissCurrentPopupChange(null, Popups.Last());
+                        _currentPopupAllowsLightDismiss = Popups.Last().AllowLightDismiss;
+                    }
+                    else
+                    {
+                        _currentPopupAllowsLightDismiss = true;
+                    }
+                }
+
+                return _currentPopupAllowsLightDismiss;
+            }
+            private set
+            {
+                if (value != _currentPopupAllowsLightDismiss)
+                {
+                    SetProperty(ref _currentPopupAllowsLightDismiss, value, nameof(CurrentPopupAllowsLightDismiss));
+                    CurrentPopupAllowsLightDismissChanged?.Invoke(this, value);
+                }
+            }
+        }
+
         private BaseViewModel _prevLastPopup;
         private void Popups_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
@@ -66,8 +104,35 @@ namespace BareMvvm.Core.ViewModels
                     this.Content.OnViewFocused();
                 }
 
+                if (_subscribedToCurrentPopupAllowsLightDismiss)
+                {
+                    HandlePopupAllowsLightDismissCurrentPopupChange(prevLastPopup, currPopup);
+                    if (currPopup != null)
+                    {
+                        CurrentPopupAllowsLightDismiss = currPopup.AllowLightDismiss;
+                    }
+                }
+
                 TriggerVisibleContentChanged();
             }
+        }
+
+        private void HandlePopupAllowsLightDismissCurrentPopupChange(BaseViewModel oldPopup, BaseViewModel currPopup)
+        {
+            if (oldPopup != null)
+            {
+                oldPopup.AllowLightDismissChanged -= CurrPopup_AllowLightDismissChanged;
+            }
+
+            if (currPopup != null)
+            {
+                currPopup.AllowLightDismissChanged += CurrPopup_AllowLightDismissChanged;
+            }
+        }
+
+        private void CurrPopup_AllowLightDismissChanged(object sender, bool newValue)
+        {
+            CurrentPopupAllowsLightDismiss = newValue;
         }
 
         public override bool GoBack()

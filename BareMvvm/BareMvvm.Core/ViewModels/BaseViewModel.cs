@@ -58,6 +58,29 @@ namespace BareMvvm.Core.ViewModels
         public event EventHandler ViewLostFocus;
         public event EventHandler ViewFocused;
         public event EventHandler<CancelEventArgs> BackRequested;
+        public event EventHandler<bool> AllowLightDismissChanged;
+
+        private bool _allowLightDismiss;
+        /// <summary>
+        /// If false, the UI presenters will prevent any light dismiss actions from dismissing the view model (like tapping the background of the popup screen in Windows or swiping down on the view in iOS). This is true by default. If your view contains info that would be destructive if accidently dismissed (like editing/adding pages), set this to false. Views subscribe to this, so a view could dynamically set this to false after the user edited content.
+        /// </summary>
+        public bool AllowLightDismiss
+        {
+            get => _allowLightDismiss;
+            set
+            {
+                if (value != _allowLightDismiss)
+                {
+                    SetProperty(ref _allowLightDismiss, value, nameof(AllowLightDismiss));
+                    AllowLightDismissChanged?.Invoke(this, value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Classes can override this rather than setting the property
+        /// </summary>
+        protected virtual bool InitialAllowLightDismissValue { get => true; }
 
         public bool IsCurrentNavigatedPage { get; private set; }
         public bool IsFocused { get; private set; }
@@ -76,6 +99,7 @@ namespace BareMvvm.Core.ViewModels
         public BaseViewModel(BaseViewModel parent)
         {
             // Final content starts off as this, itself
+            _allowLightDismiss = InitialAllowLightDismissValue;
             _finalContent = this;
             Parent = parent;
 
