@@ -64,7 +64,7 @@ namespace BareMvvm.Core.ViewModels
         /// <summary>
         /// If false, the UI presenters will prevent any light dismiss actions from dismissing the view model (like tapping the background of the popup screen in Windows or swiping down on the view in iOS). This is true by default. If your view contains info that would be destructive if accidently dismissed (like editing/adding pages), set this to false. Views subscribe to this, so a view could dynamically set this to false after the user edited content.
         /// </summary>
-        public bool AllowLightDismiss
+        public virtual bool AllowLightDismiss
         {
             get => _allowLightDismiss;
             set

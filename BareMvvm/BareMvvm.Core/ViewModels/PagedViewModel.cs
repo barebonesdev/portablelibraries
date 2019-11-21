@@ -18,6 +18,15 @@ namespace BareMvvm.Core.ViewModels
         public event EventHandler OnPresenterNeedsToClearAll;
         public event EventHandler OnPresenterNeedsToClearBackStack;
 
+        /// <summary>
+        /// This value will represent the value of the current page content. It cannot be set.
+        /// </summary>
+        public override bool AllowLightDismiss
+        {
+            get => base.AllowLightDismiss;
+            set => throw new InvalidOperationException("AllowLightDismiss cannot be set on PagedViewModel. It inherits the value from the current page.");
+        }
+
         public PagedViewModel(BaseViewModel parent) : base(parent)
         {
             (BackStack as INotifyCollectionChanged).CollectionChanged += PagedViewModel_CollectionChanged;
@@ -45,18 +54,29 @@ namespace BareMvvm.Core.ViewModels
             {
                 var oldContent = _content;
                 SetProperty(ref _content, value, "Content");
+                base.AllowLightDismiss = value != null ? value.AllowLightDismiss : InitialAllowLightDismissValue;
                 TriggerChildContentChanged(value);
                 TriggerVisibleContentChanged();
                 if (oldContent != null)
                 {
+                    oldContent.AllowLightDismissChanged -= CurrentContent_AllowLightDismissChanged;
                     oldContent.OnNavigatedFrom();
                     oldContent.OnViewLostFocus();
                 }
                 if (value != null)
                 {
+                    value.AllowLightDismissChanged += CurrentContent_AllowLightDismissChanged;
                     value.OnNavigatedTo();
                     value.OnViewFocused();
                 }
+            }
+        }
+
+        private void CurrentContent_AllowLightDismissChanged(object sender, bool newValue)
+        {
+            if (sender == Content)
+            {
+                base.AllowLightDismiss = newValue;
             }
         }
 
