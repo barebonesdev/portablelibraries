@@ -2,6 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard1.3</TargetFramework>
     <Configurations>Debug;Release;Debug (Android);Release (Android)</Configurations>
+    <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (Android)|AnyCPU'">
     <DefineConstants>TRACE;ANDROID</DefineConstants>
