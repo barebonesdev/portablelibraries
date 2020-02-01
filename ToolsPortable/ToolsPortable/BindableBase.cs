@@ -61,6 +61,8 @@ namespace ToolsPortable
             return false;
         }
 
+        protected void OnPropertyChanged(string propertyName) => OnPropertyChanged(new string[] { propertyName });
+
         /// <summary>
         /// Notifies listeners that a property value has changed.
         /// </summary>
