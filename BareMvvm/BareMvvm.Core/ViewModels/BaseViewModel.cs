@@ -113,8 +113,8 @@ namespace BareMvvm.Core.ViewModels
             string pageName = this.GetType().Name;
             if (pageName.EndsWith("ViewModel"))
             {
-                // Change "ViewModel" to "View"
-                pageName = pageName.Substring(0, pageName.Length - "Model".Length);
+                // Remove "ViewModel"
+                pageName = pageName.Substring(0, pageName.Length - "ViewModel".Length);
             }
 
             return pageName;
