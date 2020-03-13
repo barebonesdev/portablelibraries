@@ -220,6 +220,16 @@ namespace BareMvvm.Core.ViewModels
             return Parent.FindAncestor<T>();
         }
 
+        public T FindAncestorOrSelf<T>() where T : BaseViewModel
+        {
+            if (this is T)
+            {
+                return this as T;
+            }
+
+            return FindAncestor<T>();
+        }
+
         /// <summary>
         /// Returns true if was able to go back. Cascades upwards towards parents.
         /// </summary>
