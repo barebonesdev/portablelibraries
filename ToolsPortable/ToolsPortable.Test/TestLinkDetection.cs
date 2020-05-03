@@ -27,6 +27,13 @@ namespace ToolsPortable.Test
         }
 
         [TestMethod]
+        public void TestCaptialUrl()
+        {
+            Assert("Msn.com", "[Msn.com](http://Msn.com)");
+            Assert("http://Msn.com", "[http://Msn.com](http://Msn.com)");
+        }
+
+        [TestMethod]
         public void TestTrickyUrls()
         {
             Assert("See https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#C for more info", "See [https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#C](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#C) for more info");
@@ -77,6 +84,7 @@ namespace ToolsPortable.Test
             Assert("ben@gmail.com", "[ben@gmail.com](mailto:ben@gmail.com)");
             Assert("andrew-leader@outlook.com", "[andrew-leader@outlook.com](mailto:andrew-leader@outlook.com)");
             Assert("andrew.newman@outlook.com", "[andrew.newman@outlook.com](mailto:andrew.newman@outlook.com)");
+            Assert("Ben@gmail.com", "[Ben@gmail.com](mailto:Ben@gmail.com)");
         }
 
         [TestMethod]
