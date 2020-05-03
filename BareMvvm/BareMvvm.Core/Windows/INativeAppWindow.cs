@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BareMvvm.Core.Snackbar;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -12,5 +13,7 @@ namespace BareMvvm.Core.Windows
         event EventHandler<CancelEventArgs> BackPressed;
 
         void Register(PortableAppWindow portableWindow);
+
+        IBareSnackbarManager SnackbarManager { get; }
     }
 }
