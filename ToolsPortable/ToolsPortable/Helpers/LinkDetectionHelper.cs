@@ -22,7 +22,7 @@ namespace ToolsPortable.Helpers
         private static readonly string emailRegex = $@"(?:[a-z0-9!#$%&'*+/=?^_`{{|}}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{{|}}~-]+)*|""(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f] |\\[\x01-\x09\x0b\x0c\x0e-\x7f])*"")@{domain}";
 
         private static readonly string finalRegex = $"({emailRegex})|({urlRegex})";
-        private static Regex regex = new Regex(finalRegex);
+        private static Regex regex = new Regex(finalRegex, RegexOptions.IgnoreCase);
 
         public static IEnumerable<PortableRun> DetectRuns(string text)
         {
