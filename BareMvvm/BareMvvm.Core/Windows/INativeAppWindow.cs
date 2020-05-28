@@ -14,6 +14,6 @@ namespace BareMvvm.Core.Windows
 
         void Register(PortableAppWindow portableWindow);
 
-        IBareSnackbarManager SnackbarManager { get; }
+        BareSnackbarManager SnackbarManager { get; }
     }
 }
