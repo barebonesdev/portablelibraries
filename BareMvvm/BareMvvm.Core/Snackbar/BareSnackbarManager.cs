@@ -32,7 +32,10 @@ namespace BareMvvm.Core.Snackbar
             {
                 SetProperty(ref _currentSnackbar, value, nameof(CurrentSnackbar));
 
-                DisplayedSnackbars.Clear();
+                if (DisplayedSnackbars.Count > 0)
+                {
+                    DisplayedSnackbars.Clear();
+                }
 
                 if (value != null)
                 {
@@ -56,6 +59,11 @@ namespace BareMvvm.Core.Snackbar
                 else
                 {
                     _queuedSnackbars.Enqueue(snackbar);
+
+                    if (CurrentSnackbar.SkipToNextSnackbarImmediately)
+                    {
+                        Close(CurrentSnackbar); // We call close so on Android it'll close too
+                    }
                 }
             }
 

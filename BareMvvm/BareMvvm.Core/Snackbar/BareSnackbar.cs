@@ -15,6 +15,11 @@ namespace BareMvvm.Core.Snackbar
         public Action ButtonCallback { get; private set; }
 
         /// <summary>
+        /// Defaults to true, which means if another snackbar is requested to be shown, it'll be shown immediately, dismissing this one.
+        /// </summary>
+        public bool SkipToNextSnackbarImmediately { get; set; } = true;
+
+        /// <summary>
         /// Native platforms can associate the native snackbar, if required.
         /// </summary>
         public object NativeSnackbar { get; set; }
