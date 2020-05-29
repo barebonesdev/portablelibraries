@@ -10,6 +10,18 @@ namespace BareMvvm.Core.Snackbar
 {
     public class BareSnackbarManager : BindableBase
     {
+        // Android uses the events since Android has a native snackbar API that already behaves how we want it to behave
+
+        /// <summary>
+        /// Event called when a snackbar is requested to show
+        /// </summary>
+        public event EventHandler<BareSnackbar> OnShow;
+
+        /// <summary>
+        /// Event called when a shown snackbar is requested to close
+        /// </summary>
+        public event EventHandler<BareSnackbar> OnClose;
+
         private Queue<BareSnackbar> _queuedSnackbars = new Queue<BareSnackbar>();
 
         private BareSnackbar _currentSnackbar;
@@ -46,6 +58,8 @@ namespace BareMvvm.Core.Snackbar
                     _queuedSnackbars.Enqueue(snackbar);
                 }
             }
+
+            OnShow?.Invoke(this, snackbar);
         }
 
         private async void HandleDecayingSnackbar(BareSnackbar newlyShownSnackbar)
@@ -80,19 +94,21 @@ namespace BareMvvm.Core.Snackbar
             }
         }
 
-        public void Close(BareSnackbar bareSnackbar)
+        public void Close(BareSnackbar snackbar)
         {
             lock (this)
             {
-                if (CurrentSnackbar == bareSnackbar)
+                if (CurrentSnackbar == snackbar)
                 {
                     MoveToNext();
                 }
-                else if (_queuedSnackbars.Contains(bareSnackbar))
+                else if (_queuedSnackbars.Contains(snackbar))
                 {
-                    _queuedSnackbars = new Queue<BareSnackbar>(_queuedSnackbars.Except(new BareSnackbar[] { bareSnackbar }));
+                    _queuedSnackbars = new Queue<BareSnackbar>(_queuedSnackbars.Except(new BareSnackbar[] { snackbar }));
                 }
             }
+
+            OnClose?.Invoke(this, snackbar);
         }
     }
 }

@@ -14,6 +14,11 @@ namespace BareMvvm.Core.Snackbar
         public string ButtonText { get; private set; }
         public Action ButtonCallback { get; private set; }
 
+        /// <summary>
+        /// Native platforms can associate the native snackbar, if required.
+        /// </summary>
+        public object NativeSnackbar { get; set; }
+
         private BareSnackbar() { }
 
         public static BareSnackbar Make(string message, int msToBeVisible = DefaultMsToBeVisible)
