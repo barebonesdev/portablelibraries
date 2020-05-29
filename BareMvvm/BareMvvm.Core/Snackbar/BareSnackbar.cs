@@ -45,5 +45,10 @@ namespace BareMvvm.Core.Snackbar
         {
             return PortableApp.Current?.GetCurrentWindow()?.NativeAppWindow?.SnackbarManager;
         }
+
+        public void Close()
+        {
+            GetManager().Close(this);
+        }
     }
 }
