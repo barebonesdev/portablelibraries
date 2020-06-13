@@ -200,23 +200,28 @@ namespace ToolsPortable
 
         public static Func<PortableDispatcher> ObtainDispatcherFunction { get; set; }
 
+        private object m_cachedComputationPropertiesLock = new object();
         private Dictionary<string, CachedComputationProperty> m_cachedComputationProperties;
         protected T CachedComputation<T>(Func<T> computation, string[] dependentOn, [CallerMemberName]string propertyName = null)
         {
-            if (m_cachedComputationProperties == null)
-            {
-                m_cachedComputationProperties = new Dictionary<string, CachedComputationProperty>();
-            }
-
             CachedComputationProperty prop;
-            if (!m_cachedComputationProperties.TryGetValue(propertyName, out prop))
-            {
-                prop = new CachedComputationProperty(this, propertyName, delegate { return computation(); });
-                m_cachedComputationProperties[propertyName] = prop;
 
-                foreach (var dependentOnProperty in dependentOn)
+            lock (m_cachedComputationPropertiesLock)
+            {
+                if (m_cachedComputationProperties == null)
                 {
-                    ListenToProperty(dependentOnProperty, prop.NotifyDependentOnValueChanged);
+                    m_cachedComputationProperties = new Dictionary<string, CachedComputationProperty>();
+                }
+
+                if (!m_cachedComputationProperties.TryGetValue(propertyName, out prop))
+                {
+                    prop = new CachedComputationProperty(this, propertyName, delegate { return computation(); });
+                    m_cachedComputationProperties[propertyName] = prop;
+
+                    foreach (var dependentOnProperty in dependentOn)
+                    {
+                        ListenToProperty(dependentOnProperty, prop.NotifyDependentOnValueChanged);
+                    }
                 }
             }
 
@@ -278,6 +283,7 @@ namespace ToolsPortable
             }
         }
 
+        private object m_propertyChangedActionsLock = new object();
         private Dictionary<string, List<Action>> m_propertyChangedActions;
         /// <summary>
         /// Perform an action if the property was changed
@@ -286,27 +292,38 @@ namespace ToolsPortable
         /// <param name="action"></param>
         protected void ListenToProperty(string propertyName, Action action)
         {
-            if (m_propertyChangedActions == null)
+            lock (m_propertyChangedActionsLock)
             {
-                m_propertyChangedActions = new Dictionary<string, List<Action>>();
+                if (m_propertyChangedActions == null)
+                {
+                    m_propertyChangedActions = new Dictionary<string, List<Action>>();
 
-                this.PropertyChanged += OwnPropertyChanged;
+                    this.PropertyChanged += OwnPropertyChanged;
+                }
+
+                List<Action> actions;
+                if (!m_propertyChangedActions.TryGetValue(propertyName, out actions))
+                {
+                    actions = new List<Action>();
+                    m_propertyChangedActions[propertyName] = actions;
+                }
+
+                actions.Add(action);
             }
-
-            List<Action> actions;
-            if (!m_propertyChangedActions.TryGetValue(propertyName, out actions))
-            {
-                actions = new List<Action>();
-                m_propertyChangedActions[propertyName] = actions;
-            }
-
-            actions.Add(action);
         }
 
         private void OwnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             List<Action> actions;
-            if (m_propertyChangedActions.TryGetValue(e.PropertyName, out actions))
+            lock (m_propertyChangedActionsLock)
+            {
+                if (m_propertyChangedActions.TryGetValue(e.PropertyName, out actions))
+                {
+                    actions = actions.ToList();
+                }
+            }
+
+            if (actions != null)
             {
                 foreach (var a in actions)
                 {
