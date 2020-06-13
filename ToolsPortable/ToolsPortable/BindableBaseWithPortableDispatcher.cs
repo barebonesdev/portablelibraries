@@ -218,10 +218,7 @@ namespace ToolsPortable
                     prop = new CachedComputationProperty(this, propertyName, delegate { return computation(); });
                     m_cachedComputationProperties[propertyName] = prop;
 
-                    foreach (var dependentOnProperty in dependentOn)
-                    {
-                        ListenToProperty(dependentOnProperty, prop.NotifyDependentOnValueChanged);
-                    }
+                    ListenToProperties(dependentOn, prop.NotifyDependentOnValueChanged);
                 }
             }
 
@@ -288,9 +285,9 @@ namespace ToolsPortable
         /// <summary>
         /// Perform an action if the property was changed
         /// </summary>
-        /// <param name="propertyName"></param>
+        /// <param name="propertyNames"></param>
         /// <param name="action"></param>
-        protected void ListenToProperty(string propertyName, Action action)
+        protected void ListenToProperties(string[] propertyNames, Action action)
         {
             lock (m_propertyChangedActionsLock)
             {
@@ -301,14 +298,17 @@ namespace ToolsPortable
                     this.PropertyChanged += OwnPropertyChanged;
                 }
 
-                List<Action> actions;
-                if (!m_propertyChangedActions.TryGetValue(propertyName, out actions))
+                foreach (var propertyName in propertyNames)
                 {
-                    actions = new List<Action>();
-                    m_propertyChangedActions[propertyName] = actions;
-                }
+                    List<Action> actions;
+                    if (!m_propertyChangedActions.TryGetValue(propertyName, out actions))
+                    {
+                        actions = new List<Action>();
+                        m_propertyChangedActions[propertyName] = actions;
+                    }
 
-                actions.Add(action);
+                    actions.Add(action);
+                }
             }
         }
 
