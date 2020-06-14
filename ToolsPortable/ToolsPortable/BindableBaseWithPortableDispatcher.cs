@@ -204,6 +204,13 @@ namespace ToolsPortable
         private Dictionary<string, CachedComputationProperty> m_cachedComputationProperties;
         protected T CachedComputation<T>(Func<T> computation, string[] dependentOn, [CallerMemberName]string propertyName = null)
         {
+            if (propertyName == null)
+            {
+                // This should theoretically never be null, but seems like Android, when running in the widget at least, it ends up being null?
+                // Adding this check to confirm.
+                throw new ArgumentNullException(nameof(propertyName));
+            }
+
             CachedComputationProperty prop;
 
             lock (m_cachedComputationPropertiesLock)
