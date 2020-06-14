@@ -208,7 +208,7 @@ namespace ToolsPortable
             {
                 // This should theoretically never be null, but seems like Android, when running in the widget at least, it ends up being null?
                 // Adding this check to confirm.
-                throw new ArgumentNullException(nameof(propertyName));
+                throw new Exception("propertyName parameter was null");
             }
 
             CachedComputationProperty prop;
