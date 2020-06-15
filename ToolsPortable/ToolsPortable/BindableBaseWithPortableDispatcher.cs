@@ -200,10 +200,18 @@ namespace ToolsPortable
 
         public static Func<PortableDispatcher> ObtainDispatcherFunction { get; set; }
 
-        private object m_cachedComputationPropertiesLock = new object();
+        private object m_cachedComputationPropertiesLock;
         private Dictionary<string, CachedComputationProperty> m_cachedComputationProperties;
         protected T CachedComputation<T>(Func<T> computation, string[] dependentOn, [CallerMemberName]string propertyName = null)
         {
+            // Have to initialize this here since this method gets called before any class initializers are performed (not sure why exactly, probably because it's used in property values in parent class)
+            // But there shouldn't be any cross-threading concerns since that's part of the overall initialization anyways too
+            if (m_cachedComputationPropertiesLock == null)
+            {
+                m_cachedComputationPropertiesLock = new object();
+            }
+
+
             if (propertyName == null)
             {
                 // This should theoretically never be null, but seems like Android, when running in the widget at least, it ends up being null?
@@ -287,7 +295,7 @@ namespace ToolsPortable
             }
         }
 
-        private object m_propertyChangedActionsLock = new object();
+        private object m_propertyChangedActionsLock;
         private Dictionary<string, List<Action>> m_propertyChangedActions;
         /// <summary>
         /// Perform an action if the property was changed
@@ -296,6 +304,12 @@ namespace ToolsPortable
         /// <param name="action"></param>
         protected void ListenToProperties(string[] propertyNames, Action action)
         {
+            // This needs initialization outside of class initializtion for the same reason the other lock does.
+            if (m_propertyChangedActionsLock == null)
+            {
+                m_propertyChangedActionsLock = new object();
+            }
+
             lock (m_propertyChangedActionsLock)
             {
                 if (m_propertyChangedActions == null)
