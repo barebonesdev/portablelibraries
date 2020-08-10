@@ -5,8 +5,5 @@
   <ItemGroup>
     <ProjectReference Include="..\..\ToolsPortable\ToolsPortable\ToolsPortable.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
 
 </Project>
