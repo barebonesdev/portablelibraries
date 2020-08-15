@@ -154,8 +154,17 @@ namespace ToolsPortable
 
         private void OwnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            List<Action> actions;
-            if (m_propertyChangedActions.TryGetValue(e.PropertyName, out actions))
+            Action[] actions = null;
+
+            lock (m_cachedComputationLock)
+            {
+                if (m_propertyChangedActions.TryGetValue(e.PropertyName, out List<Action> actionsList))
+                {
+                    actions = actionsList.ToArray();
+                }
+            }
+
+            if (actions != null)
             {
                 foreach (var a in actions)
                 {
@@ -164,23 +173,28 @@ namespace ToolsPortable
             }
         }
 
+        private object m_cachedComputationLock = new object();
         private Dictionary<string, CachedComputationProperty> m_cachedComputationProperties;
         protected T CachedComputation<T>(Func<T> computation, string[] dependentOn, [CallerMemberName]string propertyName = null)
         {
-            if (m_cachedComputationProperties == null)
-            {
-                m_cachedComputationProperties = new Dictionary<string, CachedComputationProperty>();
-            }
-
             CachedComputationProperty prop;
-            if (!m_cachedComputationProperties.TryGetValue(propertyName, out prop))
-            {
-                prop = new CachedComputationProperty(this, propertyName, delegate { return computation(); });
-                m_cachedComputationProperties[propertyName] = prop;
 
-                foreach (var dependentOnProperty in dependentOn)
+            lock (m_cachedComputationLock)
+            {
+                if (m_cachedComputationProperties == null)
                 {
-                    ListenToProperty(dependentOnProperty, prop.NotifyDependentOnValueChanged);
+                    m_cachedComputationProperties = new Dictionary<string, CachedComputationProperty>();
+                }
+
+                if (!m_cachedComputationProperties.TryGetValue(propertyName, out prop))
+                {
+                    prop = new CachedComputationProperty(this, propertyName, delegate { return computation(); });
+                    m_cachedComputationProperties[propertyName] = prop;
+
+                    foreach (var dependentOnProperty in dependentOn)
+                    {
+                        ListenToProperty(dependentOnProperty, prop.NotifyDependentOnValueChanged);
+                    }
                 }
             }
 
