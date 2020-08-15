@@ -295,7 +295,6 @@ namespace ToolsPortable
             }
         }
 
-        private object m_propertyChangedActionsLock;
         private Dictionary<string, List<Action>> m_propertyChangedActions;
         /// <summary>
         /// Perform an action if the property was changed
@@ -304,43 +303,34 @@ namespace ToolsPortable
         /// <param name="action"></param>
         protected void ListenToProperties(string[] propertyNames, Action action)
         {
-            // This needs initialization outside of class initializtion for the same reason the other lock does.
-            if (m_propertyChangedActionsLock == null)
+            if (m_propertyChangedActions == null)
             {
-                m_propertyChangedActionsLock = new object();
+                m_propertyChangedActions = new Dictionary<string, List<Action>>();
+
+                this.PropertyChanged += OwnPropertyChanged;
             }
 
-            lock (m_propertyChangedActionsLock)
+            foreach (var propertyName in propertyNames)
             {
-                if (m_propertyChangedActions == null)
+                List<Action> actions;
+                if (!m_propertyChangedActions.TryGetValue(propertyName, out actions))
                 {
-                    m_propertyChangedActions = new Dictionary<string, List<Action>>();
-
-                    this.PropertyChanged += OwnPropertyChanged;
+                    actions = new List<Action>();
+                    m_propertyChangedActions[propertyName] = actions;
                 }
 
-                foreach (var propertyName in propertyNames)
-                {
-                    List<Action> actions;
-                    if (!m_propertyChangedActions.TryGetValue(propertyName, out actions))
-                    {
-                        actions = new List<Action>();
-                        m_propertyChangedActions[propertyName] = actions;
-                    }
-
-                    actions.Add(action);
-                }
+                actions.Add(action);
             }
         }
 
         private void OwnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            List<Action> actions;
-            lock (m_propertyChangedActionsLock)
+            Action[] actions = null;
+            lock (m_cachedComputationPropertiesLock)
             {
-                if (m_propertyChangedActions.TryGetValue(e.PropertyName, out actions))
+                if (m_propertyChangedActions.TryGetValue(e.PropertyName, out List<Action> actionsList))
                 {
-                    actions = actions.ToList();
+                    actions = actionsList.ToArray();
                 }
             }
 

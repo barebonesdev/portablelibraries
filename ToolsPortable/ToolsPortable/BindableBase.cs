@@ -173,10 +173,17 @@ namespace ToolsPortable
             }
         }
 
-        private object m_cachedComputationLock = new object();
+        private object m_cachedComputationLock;
         private Dictionary<string, CachedComputationProperty> m_cachedComputationProperties;
         protected T CachedComputation<T>(Func<T> computation, string[] dependentOn, [CallerMemberName]string propertyName = null)
         {
+            // Have to initialize this here since this method gets called before any class initializers are performed (not sure why exactly, probably because it's used in property values in parent class)
+            // But there shouldn't be any cross-threading concerns since that's part of the overall initialization anyways too
+            if (m_cachedComputationLock == null)
+            {
+                m_cachedComputationLock = new object();
+            }
+
             CachedComputationProperty prop;
 
             lock (m_cachedComputationLock)
