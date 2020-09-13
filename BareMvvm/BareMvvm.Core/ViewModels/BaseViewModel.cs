@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BareMvvm.Core.Strings;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -502,6 +503,38 @@ namespace BareMvvm.Core.ViewModels
         {
             IsCurrentNavigatedPage = false;
             NavigatedFrom?.Invoke(this, new EventArgs());
+        }
+
+        protected bool ValidateAllInputs(bool showValidationErrorMessage = true, Dictionary<string, Action<TextField>> customValidators = null)
+        {
+            var props = this.GetType().GetRuntimeProperties().Where(i => i.PropertyType == typeof(TextField));
+
+            bool isValid = true;
+
+            foreach (var p in props)
+            {
+                TextField field = p.GetValue(this) as TextField;
+                if (field != null)
+                {
+                    if (customValidators != null && customValidators.TryGetValue(p.Name, out Action<TextField> customValidator))
+                    {
+                        customValidator(field);
+                    }
+                    else
+                    {
+                        field.Validate();
+                    }
+
+                    isValid = isValid && field.ValidationState == InputValidationState.Valid;
+                }
+            }
+
+            if (!isValid && showValidationErrorMessage)
+            {
+                new PortableMessageDialog(Resources.InvalidInputs_Content, Resources.InvalidInputs_Title).Show();
+            }
+
+            return isValid;
         }
 
         private class AsyncUserInteraction

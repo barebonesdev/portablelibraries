@@ -211,3 +211,9 @@ _Pvt_Extensions/
 ModelManifest.xml
 *.appx
 *.apk
+
+# Ignore compiled resource translations
+Resources.*.resx
+
+# Ignore designers
+*.Designer.cs
