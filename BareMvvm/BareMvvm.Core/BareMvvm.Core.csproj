@@ -9,6 +9,19 @@
     <TranslationReport Condition="'$(Configuration)' == 'Release'">true</TranslationReport>
     <SuppressPseudoWarning Condition="'$(Configuration)' == 'Debug'">true</SuppressPseudoWarning>
   </PropertyGroup>
+  
+  <!--Depends on PrepareForBuild so obj folder exists as AssemblyInfo also does: https://stackoverflow.com/a/44046208/1454643-->
+  <Target Name="Resources" BeforeTargets="CoreCompile" DependsOnTargets="PrepareForBuild">
+    <GenerateResource
+      Sources="Strings\Resources.resx"
+      SdkToolsPath="resgen.exe"
+      StronglyTypedLanguage="C#"
+      StronglyTypedFilename="Strings\Resources.Designer.cs"
+      StronglyTypedNamespace="BareMvvm.Core.Strings"
+      OutputResources="$(IntermediateOutputPath)\BareMvvm.Core.Strings.Resources.resources">
+    </GenerateResource>
+  </Target>
+  
   <ItemGroup>
     <PackageReference Include="XliffCompiler" Version="1.0.12">
       <PrivateAssets>all</PrivateAssets>
