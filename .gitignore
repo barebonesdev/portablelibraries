@@ -214,6 +214,3 @@ ModelManifest.xml
 
 # Ignore compiled resource translations
 Resources.*.resx
-
-# Ignore designers
-*.Designer.cs
