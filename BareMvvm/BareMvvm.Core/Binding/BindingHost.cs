@@ -46,10 +46,7 @@ namespace BareMvvm.Core.Binding
                     (value as INotifyPropertyChanged).PropertyChanged += _dataContextPropertyChangedHandler;
                 }
 
-                if (value != null)
-                {
-                    UpdateAllBindings();
-                }
+                UpdateAllBindings();
             }
         }
 
@@ -118,7 +115,7 @@ namespace BareMvvm.Core.Binding
 
         public void SetBinding<T>(string propertyPath, Action<T> action)
         {
-            SetBinding(propertyPath, delegate
+            SetBinding(propertyPath, () =>
             {
                 object value = GetValue(propertyPath);
                 if (value == null)
@@ -134,7 +131,11 @@ namespace BareMvvm.Core.Binding
 
         public void SetBinding(string propertyPath, Action<object> action)
         {
-            SetBinding<object>(propertyPath, action);
+            SetBinding(propertyPath, () =>
+            {
+                object value = GetValue(propertyPath);
+                action(value);
+            });
         }
 
         public void SetBinding(string propertyPath, Action action, bool skipInvokingActionImmediately = false)
@@ -157,9 +158,10 @@ namespace BareMvvm.Core.Binding
 
                 storedActions.Add(action);
 
+                // We require DataContext to be set here since bindings can be wired before DataContext is set
                 if (DataContext != null && !skipInvokingActionImmediately)
                 {
-                    action.Invoke();
+                    action();
                 }
             }
             else
@@ -175,6 +177,12 @@ namespace BareMvvm.Core.Binding
                 }
 
                 subBinding.SetBinding(propertyPaths.Skip(1).ToArray(), action, skipInvokingActionImmediately);
+
+                // For this we need to execute first time even if data context was null (for example binding Class.Name should execute even if Class was null)
+                if (DataContext != null && subBinding.DataContext == null && !skipInvokingActionImmediately)
+                {
+                    action();
+                }
             }
         }
 
@@ -201,7 +209,7 @@ namespace BareMvvm.Core.Binding
             return obj;
         }
 
-        protected Tuple<object, PropertyInfo> GetProperty(string propertyPath)
+        public Tuple<object, PropertyInfo> GetProperty(string propertyPath)
         {
             string[] paths = propertyPath.Split('.');
 
