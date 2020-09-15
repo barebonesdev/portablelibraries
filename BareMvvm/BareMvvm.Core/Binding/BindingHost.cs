@@ -215,6 +215,12 @@ namespace BareMvvm.Core.Binding
 
         private object GetValue(string propertyPath)
         {
+            // We support binding to the data context itself
+            if (propertyPath.Length == 0)
+            {
+                return DataContext;
+            }
+
             string[] paths = propertyPath.Split('.');
 
             object obj = DataContext;
@@ -225,7 +231,18 @@ namespace BareMvvm.Core.Binding
                     return null;
                 }
 
-                obj = obj.GetType().GetProperty(propertyName).GetValue(obj);
+                var prop = obj.GetType().GetProperty(propertyName);
+                if (prop == null)
+                {
+                    var exMessage = $"Failed to find property {propertyName} on object {obj.GetType()} when resolving property path {propertyPath}.";
+                    if (Debugger.IsAttached)
+                    {
+                        Debugger.Break();
+                    }
+
+                    throw new KeyNotFoundException(exMessage);
+                }
+                obj = prop.GetValue(obj);
             }
 
             return obj;

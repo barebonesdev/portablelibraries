@@ -491,5 +491,46 @@ namespace BareMvvm.Core.Test
             Assert.AreEqual(3, nameAlwaysExecutions);
             Assert.AreEqual(4, classNameAlwaysExecutions);
         }
+
+        [TestMethod]
+        public void TestBindingToDataContext()
+        {
+            var task1 = new MyTask()
+            {
+                Name = "Bookwork 1"
+            };
+
+            var task2 = new MyTask()
+            {
+                Name = "Bookwork 2"
+            };
+
+            BindingHost bindingHost = new BindingHost()
+            {
+                DataContext = task1
+            };
+
+            int timesInvoked = 0;
+
+            bindingHost.SetBinding<MyTask>("", task =>
+            {
+                if (timesInvoked == 0)
+                {
+                    Assert.ReferenceEquals(task1, task);
+                }
+                else
+                {
+                    Assert.ReferenceEquals(task2, task);
+                }
+
+                timesInvoked++;
+            });
+
+            Assert.AreEqual(1, timesInvoked);
+
+            bindingHost.DataContext = task2;
+
+            Assert.AreEqual(2, timesInvoked);
+        }
     }
 }
