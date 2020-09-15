@@ -56,7 +56,7 @@ namespace BareMvvm.Core.Binding
 
             // We call ToArray() since a binding action could cause a new binding to be added while we're working
             Action[] existingActions = null;
-            if (_bindings.TryGetValue(e.PropertyName, out List<BindingRegistration> bindings))
+            if (_bindings.TryGetValue(e.PropertyName, out List<InternalBindingRegistration> bindings))
             {
                 if (wasResultOfSettingValue)
                 {
@@ -119,25 +119,58 @@ namespace BareMvvm.Core.Binding
             }
         }
 
-        private class BindingRegistration
+        internal class InternalBindingRegistration
         {
             public Action Action { get; private set; }
 
             public bool TriggerEvenWhenSetThroughBinding { get; private set; }
 
-            public BindingRegistration(Action action, bool triggerEvenWhenSetThroughBinding)
+            public InternalBindingRegistration(Action action, bool triggerEvenWhenSetThroughBinding)
             {
                 Action = action;
                 TriggerEvenWhenSetThroughBinding = triggerEvenWhenSetThroughBinding;
             }
         }
 
-        private Dictionary<string, List<BindingRegistration>> _bindings = new Dictionary<string, List<BindingRegistration>>();
+        private Dictionary<string, List<InternalBindingRegistration>> _bindings = new Dictionary<string, List<InternalBindingRegistration>>();
         private Dictionary<string, BindingHost> _subPropertyBindings = new Dictionary<string, BindingHost>();
 
-        public void SetBinding<T>(string propertyPath, Action<T> action, bool triggerEvenWhenSetThroughBinding = false)
+        internal void UnregisterBinding(BindingRegistration registration)
         {
-            SetBinding(propertyPath, () =>
+            if (registration.InternalRegistration != null)
+            {
+                if (_bindings.TryGetValue(registration.PropertyName, out List<InternalBindingRegistration> internalRegistrations))
+                {
+                    internalRegistrations.Remove(registration.InternalRegistration);
+                    if (internalRegistrations.Count == 0)
+                    {
+                        _bindings.Remove(registration.PropertyName);
+                    }
+                }
+            }
+            else
+            {
+                if (_subPropertyBindings.TryGetValue(registration.PropertyName, out BindingHost subBindingHost))
+                {
+                    subBindingHost.UnregisterBinding(registration.SubRegistration);
+
+                    if (subBindingHost.IsEmpty())
+                    {
+                        subBindingHost.Unregister();
+                        _subPropertyBindings.Remove(registration.PropertyName);
+                    }
+                }
+            }
+        }
+
+        private bool IsEmpty()
+        {
+            return _bindings.Count == 0 && _subPropertyBindings.Count == 0;
+        }
+
+        public BindingRegistration SetBinding<T>(string propertyPath, Action<T> action, bool triggerEvenWhenSetThroughBinding = false)
+        {
+            return SetBinding(propertyPath, () =>
             {
                 object value = GetValue(propertyPath);
                 if (value == null)
@@ -151,40 +184,43 @@ namespace BareMvvm.Core.Binding
             }, triggerEvenWhenSetThroughBinding: triggerEvenWhenSetThroughBinding);
         }
 
-        public void SetBinding(string propertyPath, Action<object> action, bool triggerEvenWhenSetThroughBinding = false)
+        public BindingRegistration SetBinding(string propertyPath, Action<object> action, bool triggerEvenWhenSetThroughBinding = false)
         {
-            SetBinding(propertyPath, () =>
+            return SetBinding(propertyPath, () =>
             {
                 object value = GetValue(propertyPath);
                 action(value);
             }, triggerEvenWhenSetThroughBinding: triggerEvenWhenSetThroughBinding);
         }
 
-        public void SetBinding(string propertyPath, Action action, bool skipInvokingActionImmediately = false, bool triggerEvenWhenSetThroughBinding = false)
+        public BindingRegistration SetBinding(string propertyPath, Action action, bool skipInvokingActionImmediately = false, bool triggerEvenWhenSetThroughBinding = false)
         {
-            SetBinding(propertyPath.Split('.'), action, skipInvokingActionImmediately, triggerEvenWhenSetThroughBinding: triggerEvenWhenSetThroughBinding);
+            return SetBinding(propertyPath.Split('.'), action, skipInvokingActionImmediately, triggerEvenWhenSetThroughBinding: triggerEvenWhenSetThroughBinding);
         }
 
-        private void SetBinding(string[] propertyPaths, Action action, bool skipInvokingActionImmediately, bool triggerEvenWhenSetThroughBinding)
+        private BindingRegistration SetBinding(string[] propertyPaths, Action action, bool skipInvokingActionImmediately, bool triggerEvenWhenSetThroughBinding)
         {
             string immediatePath = propertyPaths[0];
 
             if (propertyPaths.Length == 1)
             {
-                List<BindingRegistration> storedBindings;
+                List<InternalBindingRegistration> storedBindings;
                 if (!_bindings.TryGetValue(immediatePath, out storedBindings))
                 {
-                    storedBindings = new List<BindingRegistration>();
+                    storedBindings = new List<InternalBindingRegistration>();
                     _bindings[immediatePath] = storedBindings;
                 }
 
-                storedBindings.Add(new BindingRegistration(action, triggerEvenWhenSetThroughBinding));
+                var internalRegistration = new InternalBindingRegistration(action, triggerEvenWhenSetThroughBinding);
+                storedBindings.Add(internalRegistration);
 
                 // We require DataContext to be set here since bindings can be wired before DataContext is set
                 if (DataContext != null && !skipInvokingActionImmediately)
                 {
                     action();
                 }
+
+                return new BindingRegistration(this, immediatePath, internalRegistration);
             }
             else
             {
@@ -198,13 +234,15 @@ namespace BareMvvm.Core.Binding
                     _subPropertyBindings[immediatePath] = subBinding;
                 }
 
-                subBinding.SetBinding(propertyPaths.Skip(1).ToArray(), action, skipInvokingActionImmediately, triggerEvenWhenSetThroughBinding);
+                var subRegistration = subBinding.SetBinding(propertyPaths.Skip(1).ToArray(), action, skipInvokingActionImmediately, triggerEvenWhenSetThroughBinding);
 
                 // For this we need to execute first time even if data context was null (for example binding Class.Name should execute even if Class was null)
                 if (DataContext != null && subBinding.DataContext == null && !skipInvokingActionImmediately)
                 {
                     action();
                 }
+
+                return new BindingRegistration(this, immediatePath, subRegistration);
             }
         }
 

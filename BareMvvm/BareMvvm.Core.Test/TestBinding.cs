@@ -532,5 +532,180 @@ namespace BareMvvm.Core.Test
 
             Assert.AreEqual(2, timesInvoked);
         }
+
+        [TestMethod]
+        public void TestUnregisterBinding()
+        {
+            var task = new MyTask()
+            {
+                Name = "Bookwork"
+            };
+
+            var bindingHost = new BindingHost()
+            {
+                DataContext = task
+            };
+
+            int nameExecutions = 0;
+
+            var nameBinding = bindingHost.SetBinding<string>("Name", name =>
+            {
+                Assert.AreEqual(task.Name, name);
+                nameExecutions++;
+            });
+
+            Assert.AreEqual(1, nameExecutions);
+
+            nameBinding.Unregister();
+
+            task.Name = "Bookwork updated";
+
+            Assert.AreEqual(1, nameExecutions);
+
+            // Register again
+            bindingHost.SetBinding<string>("Name", name =>
+            {
+                Assert.AreEqual(task.Name, name);
+                nameExecutions++;
+            });
+
+            Assert.AreEqual(2, nameExecutions);
+
+            task.Name = "Bookwork updated 2";
+
+            Assert.AreEqual(3, nameExecutions);
+        }
+
+        [TestMethod]
+        public void TestUnregisterMultiLevelBinding()
+        {
+            var c1 = new MyClass()
+            {
+                Name = "Math"
+            };
+
+            var c2 = new MyClass()
+            {
+                Name = "Science"
+            };
+
+            var task = new MyTask()
+            {
+                Name = "Bookwork",
+                Class = c1
+            };
+
+            var bindingHost = new BindingHost()
+            {
+                DataContext = task
+            };
+
+            int classNameExecutions = 0;
+
+            var classNameBinding = bindingHost.SetBinding<string>("Class.Name", className =>
+            {
+                Assert.AreEqual(task.Class.Name, className);
+                classNameExecutions++;
+            });
+
+            Assert.AreEqual(1, classNameExecutions);
+
+            classNameBinding.Unregister();
+
+            // Changing these shouldn't do anything
+            task.Class.Name = "Math updated";
+            task.Class = c2;
+            task.Name = "Bookwork updated";
+
+            Assert.AreEqual(1, classNameExecutions);
+
+            // Register again
+            bindingHost.SetBinding<string>("Class.Name", className =>
+            {
+                Assert.AreEqual(task.Class.Name, className);
+                classNameExecutions++;
+            });
+
+            // It should have ran now
+            Assert.AreEqual(2, classNameExecutions);
+
+            // And changing these should have an effect (2 additional runs)
+            task.Class.Name = "Science updated";
+            task.Class = c1;
+            task.Name = "Bookwork updated 2";
+
+            Assert.AreEqual(4, classNameExecutions);
+        }
+
+        [TestMethod]
+        public void TestUnregisteringJustOneBinding()
+        {
+            var class1 = new MyClass()
+            {
+                Name = "Math"
+            };
+
+            var class2 = new MyClass()
+            {
+                Name = "Science"
+            };
+
+            var task = new MyTask()
+            {
+                Name = "Bookwork",
+                Class = class1
+            };
+
+            var bindingHost = new BindingHost()
+            {
+                DataContext = task
+            };
+
+            int name1Executions = 0;
+            int name2Executions = 0;
+            int className1Executions = 0;
+            int className2Executions = 0;
+
+
+            var name1Binding = bindingHost.SetBinding<string>("Name", name =>
+            {
+                Assert.AreEqual(task.Name, name);
+                name1Executions++;
+            });
+
+            var name2Binding = bindingHost.SetBinding<string>("Name", name =>
+            {
+                Assert.AreEqual(task.Name, name);
+                name2Executions++;
+            });
+
+            var className1Binding = bindingHost.SetBinding<string>("Class.Name", name =>
+            {
+                Assert.AreEqual(task.Class.Name, name);
+                className1Executions++;
+            });
+
+            var className2Binding = bindingHost.SetBinding<string>("Class.Name", name =>
+            {
+                Assert.AreEqual(task.Class.Name, name);
+                className2Executions++;
+            });
+
+            Assert.AreEqual(1, name1Executions);
+            Assert.AreEqual(1, name2Executions);
+            Assert.AreEqual(1, className1Executions);
+            Assert.AreEqual(1, className2Executions);
+
+            name1Binding.Unregister();
+            className1Binding.Unregister();
+
+            task.Name = "Bookwork updated";
+            task.Class = class2;
+
+            Assert.AreEqual(1, name1Executions);
+            Assert.AreEqual(2, name2Executions);
+            Assert.AreEqual(1, className1Executions);
+            Assert.AreEqual(2, className2Executions);
+        }
     }
 }
