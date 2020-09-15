@@ -425,71 +425,152 @@ namespace BareMvvm.Core.Test
                 DataContext = task
             };
 
-            int nameExecutions = 0;
-            int classNameExecutions = 0;
-            int nameAlwaysExecutions = 0;
-            int classNameAlwaysExecutions = 0;
+            int name1Executions = 0;
+            int name2Executions = 0;
+            int className1Executions = 0;
+            int className2Executions = 0;
 
-            bindingHost.SetBinding<string>("Name", name =>
+            var name1Registration = bindingHost.SetBinding<string>("Name", name =>
             {
                 Assert.AreEqual(task.Name, name);
-                nameExecutions++;
+                name1Executions++;
             });
 
-            bindingHost.SetBinding<string>("Class.Name", className =>
-            {
-                Assert.AreEqual(task.Class.Name, className);
-                classNameExecutions++;
-            });
-
-            // These should always execute even when set through binding
-            bindingHost.SetBinding<string>("Name", name =>
+            var name2Registration = bindingHost.SetBinding<string>("Name", name =>
             {
                 Assert.AreEqual(task.Name, name);
-                nameAlwaysExecutions++;
-            }, triggerEvenWhenSetThroughBinding: true);
+                name2Executions++;
+            });
 
-            bindingHost.SetBinding<string>("Class.Name", className =>
+            var className1Registration = bindingHost.SetBinding<string>("Class.Name", className =>
             {
                 Assert.AreEqual(task.Class.Name, className);
-                classNameAlwaysExecutions++;
-            }, triggerEvenWhenSetThroughBinding: true);
+                className1Executions++;
+            });
+
+            var className2Registration = bindingHost.SetBinding<string>("Class.Name", className =>
+            {
+                Assert.AreEqual(task.Class.Name, className);
+                className2Executions++;
+            });
 
             // Should only have initial executions so far
-            Assert.AreEqual(1, nameExecutions);
-            Assert.AreEqual(1, classNameExecutions);
-            Assert.AreEqual(1, nameAlwaysExecutions);
-            Assert.AreEqual(1, classNameAlwaysExecutions);
+            Assert.AreEqual(1, name1Executions);
+            Assert.AreEqual(1, name2Executions);
+            Assert.AreEqual(1, className1Executions);
+            Assert.AreEqual(1, className2Executions);
 
-            bindingHost.SetValue("Name", "Bookwork updated");
-            bindingHost.SetValue("Class.Name", "Math updated");
+            name1Registration.SetSourceValue("Bookwork updated");
 
-            // Even though values changed, bindings shouldn't re-execute since we set them ourselves
-            Assert.AreEqual(1, nameExecutions);
-            Assert.AreEqual(1, classNameExecutions);
+            // Only ones I didn't set through should have updated
+            Assert.AreEqual("Bookwork updated", task.Name);
+            Assert.AreEqual(1, name1Executions);
+            Assert.AreEqual(2, name2Executions);
+            Assert.AreEqual(1, className1Executions);
+            Assert.AreEqual(1, className2Executions);
 
-            // But the ones we said to update regardless should still update
-            Assert.AreEqual(2, nameAlwaysExecutions);
-            Assert.AreEqual(2, classNameAlwaysExecutions);
+            className2Registration.SetSourceValue("Math updated");
+
+            // Only ones I didn't set through should have updated
+            Assert.AreEqual("Math updated", task.Class.Name);
+            Assert.AreEqual(1, name1Executions);
+            Assert.AreEqual(2, name2Executions);
+            Assert.AreEqual(2, className1Executions);
+            Assert.AreEqual(1, className2Executions);
+
+            // And vice versa
+            name2Registration.SetSourceValue("Bookwork updated 2");
+            className1Registration.SetSourceValue("Math updated 2");
+            Assert.AreEqual("Bookwork updated 2", task.Name);
+            Assert.AreEqual("Math updated 2", task.Class.Name);
+            Assert.AreEqual(2, name1Executions);
+            Assert.AreEqual(2, name2Executions);
+            Assert.AreEqual(2, className1Executions);
+            Assert.AreEqual(2, className2Executions);
 
             // And setting programmatically should update all
-            task.Name = "Bookwork 2";
-            task.Class.Name = "Math 2";
-            Assert.AreEqual(2, nameExecutions);
-            Assert.AreEqual(2, classNameExecutions);
-            Assert.AreEqual(3, nameAlwaysExecutions);
-            Assert.AreEqual(3, classNameAlwaysExecutions);
+            task.Name = "Bookwork 3";
+            task.Class.Name = "Math 3";
+            Assert.AreEqual(3, name1Executions);
+            Assert.AreEqual(3, name2Executions);
+            Assert.AreEqual(3, className1Executions);
+            Assert.AreEqual(3, className2Executions);
+        }
 
-            // Setting class through binding should cause the class name binding to update
-            bindingHost.SetValue("Class", new MyClass()
+
+
+        [TestMethod]
+        public void TestSettingValuesThroughBindingWithPreObtainedProperty()
+        {
+            var task = new MyTask()
             {
-                Name = "Spanish"
+                Name = "Bookwork",
+                PercentComplete = 0.3,
+                Class = new MyClass()
+                {
+                    Name = "Math"
+                }
+            };
+
+            BindingHost bindingHost = new BindingHost()
+            {
+                DataContext = task
+            };
+
+            int name1Executions = 0;
+            int name2Executions = 0;
+            int className1Executions = 0;
+            int className2Executions = 0;
+
+            var name1Registration = bindingHost.SetBinding<string>("Name", name =>
+            {
+                Assert.AreEqual(task.Name, name);
+                name1Executions++;
             });
 
-            Assert.AreEqual(2, nameExecutions);
-            Assert.AreEqual(3, classNameExecutions);
-            Assert.AreEqual(3, nameAlwaysExecutions);
-            Assert.AreEqual(4, classNameAlwaysExecutions);
+            var name2Registration = bindingHost.SetBinding<string>("Name", name =>
+            {
+                Assert.AreEqual(task.Name, name);
+                name2Executions++;
+            });
+
+            var className1Registration = bindingHost.SetBinding<string>("Class.Name", className =>
+            {
+                Assert.AreEqual(task.Class.Name, className);
+                className1Executions++;
+            });
+
+            var className2Registration = bindingHost.SetBinding<string>("Class.Name", className =>
+            {
+                Assert.AreEqual(task.Class.Name, className);
+                className2Executions++;
+            });
+
+            // Should only have initial executions so far
+            Assert.AreEqual(1, name1Executions);
+            Assert.AreEqual(1, name2Executions);
+            Assert.AreEqual(1, className1Executions);
+            Assert.AreEqual(1, className2Executions);
+
+            var name1Property = name1Registration.GetSourceProperty();
+            name1Registration.SetSourceValue("Bookwork updated", name1Property);
+
+            // Only ones I didn't set through should have updated
+            Assert.AreEqual("Bookwork updated", task.Name);
+            Assert.AreEqual(1, name1Executions);
+            Assert.AreEqual(2, name2Executions);
+            Assert.AreEqual(1, className1Executions);
+            Assert.AreEqual(1, className2Executions);
+
+            var className2Property = className2Registration.GetSourceProperty();
+            className2Registration.SetSourceValue("Math updated", className2Property);
+
+            // Only ones I didn't set through should have updated
+            Assert.AreEqual("Math updated", task.Class.Name);
+            Assert.AreEqual(1, name1Executions);
+            Assert.AreEqual(2, name2Executions);
+            Assert.AreEqual(2, className1Executions);
+            Assert.AreEqual(1, className2Executions);
         }
 
         [TestMethod]
