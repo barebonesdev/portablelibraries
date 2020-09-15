@@ -406,5 +406,90 @@ namespace BareMvvm.Core.Test
             Assert.AreEqual(3, nameExecutions);
             Assert.AreEqual(3, classNameExecutions);
         }
+
+        [TestMethod]
+        public void TestSettingValuesThroughBinding()
+        {
+            var task = new MyTask()
+            {
+                Name = "Bookwork",
+                PercentComplete = 0.3,
+                Class = new MyClass()
+                {
+                    Name = "Math"
+                }
+            };
+
+            BindingHost bindingHost = new BindingHost()
+            {
+                DataContext = task
+            };
+
+            int nameExecutions = 0;
+            int classNameExecutions = 0;
+            int nameAlwaysExecutions = 0;
+            int classNameAlwaysExecutions = 0;
+
+            bindingHost.SetBinding<string>("Name", name =>
+            {
+                Assert.AreEqual(task.Name, name);
+                nameExecutions++;
+            });
+
+            bindingHost.SetBinding<string>("Class.Name", className =>
+            {
+                Assert.AreEqual(task.Class.Name, className);
+                classNameExecutions++;
+            });
+
+            // These should always execute even when set through binding
+            bindingHost.SetBinding<string>("Name", name =>
+            {
+                Assert.AreEqual(task.Name, name);
+                nameAlwaysExecutions++;
+            }, triggerEvenWhenSetThroughBinding: true);
+
+            bindingHost.SetBinding<string>("Class.Name", className =>
+            {
+                Assert.AreEqual(task.Class.Name, className);
+                classNameAlwaysExecutions++;
+            }, triggerEvenWhenSetThroughBinding: true);
+
+            // Should only have initial executions so far
+            Assert.AreEqual(1, nameExecutions);
+            Assert.AreEqual(1, classNameExecutions);
+            Assert.AreEqual(1, nameAlwaysExecutions);
+            Assert.AreEqual(1, classNameAlwaysExecutions);
+
+            bindingHost.SetValue("Name", "Bookwork updated");
+            bindingHost.SetValue("Class.Name", "Math updated");
+
+            // Even though values changed, bindings shouldn't re-execute since we set them ourselves
+            Assert.AreEqual(1, nameExecutions);
+            Assert.AreEqual(1, classNameExecutions);
+
+            // But the ones we said to update regardless should still update
+            Assert.AreEqual(2, nameAlwaysExecutions);
+            Assert.AreEqual(2, classNameAlwaysExecutions);
+
+            // And setting programmatically should update all
+            task.Name = "Bookwork 2";
+            task.Class.Name = "Math 2";
+            Assert.AreEqual(2, nameExecutions);
+            Assert.AreEqual(2, classNameExecutions);
+            Assert.AreEqual(3, nameAlwaysExecutions);
+            Assert.AreEqual(3, classNameAlwaysExecutions);
+
+            // Setting class through binding should cause the class name binding to update
+            bindingHost.SetValue("Class", new MyClass()
+            {
+                Name = "Spanish"
+            });
+
+            Assert.AreEqual(2, nameExecutions);
+            Assert.AreEqual(3, classNameExecutions);
+            Assert.AreEqual(3, nameAlwaysExecutions);
+            Assert.AreEqual(4, classNameAlwaysExecutions);
+        }
     }
 }

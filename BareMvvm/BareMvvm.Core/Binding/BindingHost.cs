@@ -52,11 +52,20 @@ namespace BareMvvm.Core.Binding
 
         private void DataContext_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            bool wasResultOfSettingValue = _immediatePropertyChangeNotificationsToSkipOnce.Remove(e.PropertyName);
+
             // We call ToArray() since a binding action could cause a new binding to be added while we're working
             Action[] existingActions = null;
-            if (_bindings.TryGetValue(e.PropertyName, out List<Action> actions))
+            if (_bindings.TryGetValue(e.PropertyName, out List<BindingRegistration> bindings))
             {
-                existingActions = actions.ToArray();
+                if (wasResultOfSettingValue)
+                {
+                    existingActions = bindings.Where(i => i.TriggerEvenWhenSetThroughBinding).Select(i => i.Action).ToArray();
+                }
+                else
+                {
+                    existingActions = bindings.Select(i => i.Action).ToArray();
+                }
             }
 
             _subPropertyBindings.TryGetValue(e.PropertyName, out BindingHost existingSubBinding);
@@ -75,7 +84,7 @@ namespace BareMvvm.Core.Binding
         private void UpdateAllBindings()
         {
             // Grab these as a copied array so that any of the sub actions don't modify them as we iterate
-            Action[] existingActions = _bindings.Values.SelectMany(i => i).ToArray();
+            Action[] existingActions = _bindings.Values.SelectMany(i => i).Select(i => i.Action).ToArray();
             KeyValuePair<string, BindingHost>[] existingSubBindings = _subPropertyBindings.ToArray();
 
             ExecuteActions(existingActions);
@@ -110,10 +119,23 @@ namespace BareMvvm.Core.Binding
             }
         }
 
-        private Dictionary<string, List<Action>> _bindings = new Dictionary<string, List<Action>>();
+        private class BindingRegistration
+        {
+            public Action Action { get; private set; }
+
+            public bool TriggerEvenWhenSetThroughBinding { get; private set; }
+
+            public BindingRegistration(Action action, bool triggerEvenWhenSetThroughBinding)
+            {
+                Action = action;
+                TriggerEvenWhenSetThroughBinding = triggerEvenWhenSetThroughBinding;
+            }
+        }
+
+        private Dictionary<string, List<BindingRegistration>> _bindings = new Dictionary<string, List<BindingRegistration>>();
         private Dictionary<string, BindingHost> _subPropertyBindings = new Dictionary<string, BindingHost>();
 
-        public void SetBinding<T>(string propertyPath, Action<T> action)
+        public void SetBinding<T>(string propertyPath, Action<T> action, bool triggerEvenWhenSetThroughBinding = false)
         {
             SetBinding(propertyPath, () =>
             {
@@ -126,37 +148,37 @@ namespace BareMvvm.Core.Binding
                 {
                     action((T)value);
                 }
-            });
+            }, triggerEvenWhenSetThroughBinding: triggerEvenWhenSetThroughBinding);
         }
 
-        public void SetBinding(string propertyPath, Action<object> action)
+        public void SetBinding(string propertyPath, Action<object> action, bool triggerEvenWhenSetThroughBinding = false)
         {
             SetBinding(propertyPath, () =>
             {
                 object value = GetValue(propertyPath);
                 action(value);
-            });
+            }, triggerEvenWhenSetThroughBinding: triggerEvenWhenSetThroughBinding);
         }
 
-        public void SetBinding(string propertyPath, Action action, bool skipInvokingActionImmediately = false)
+        public void SetBinding(string propertyPath, Action action, bool skipInvokingActionImmediately = false, bool triggerEvenWhenSetThroughBinding = false)
         {
-            SetBinding(propertyPath.Split('.'), action, skipInvokingActionImmediately);
+            SetBinding(propertyPath.Split('.'), action, skipInvokingActionImmediately, triggerEvenWhenSetThroughBinding: triggerEvenWhenSetThroughBinding);
         }
 
-        private void SetBinding(string[] propertyPaths, Action action, bool skipInvokingActionImmediately)
+        private void SetBinding(string[] propertyPaths, Action action, bool skipInvokingActionImmediately, bool triggerEvenWhenSetThroughBinding)
         {
             string immediatePath = propertyPaths[0];
 
             if (propertyPaths.Length == 1)
             {
-                List<Action> storedActions;
-                if (!_bindings.TryGetValue(immediatePath, out storedActions))
+                List<BindingRegistration> storedBindings;
+                if (!_bindings.TryGetValue(immediatePath, out storedBindings))
                 {
-                    storedActions = new List<Action>();
-                    _bindings[immediatePath] = storedActions;
+                    storedBindings = new List<BindingRegistration>();
+                    _bindings[immediatePath] = storedBindings;
                 }
 
-                storedActions.Add(action);
+                storedBindings.Add(new BindingRegistration(action, triggerEvenWhenSetThroughBinding));
 
                 // We require DataContext to be set here since bindings can be wired before DataContext is set
                 if (DataContext != null && !skipInvokingActionImmediately)
@@ -176,7 +198,7 @@ namespace BareMvvm.Core.Binding
                     _subPropertyBindings[immediatePath] = subBinding;
                 }
 
-                subBinding.SetBinding(propertyPaths.Skip(1).ToArray(), action, skipInvokingActionImmediately);
+                subBinding.SetBinding(propertyPaths.Skip(1).ToArray(), action, skipInvokingActionImmediately, triggerEvenWhenSetThroughBinding);
 
                 // For this we need to execute first time even if data context was null (for example binding Class.Name should execute even if Class was null)
                 if (DataContext != null && subBinding.DataContext == null && !skipInvokingActionImmediately)
@@ -232,12 +254,50 @@ namespace BareMvvm.Core.Binding
             return new Tuple<object, PropertyInfo>(obj, obj.GetType().GetProperty(paths.Last()));
         }
 
-        protected void SetValue(string propertyPath, object value)
+        private HashSet<string> _immediatePropertyChangeNotificationsToSkipOnce = new HashSet<string>();
+
+        /// <summary>
+        /// Will ensure events aren't triggered when value is set
+        /// </summary>
+        /// <param name="propertyPath"></param>
+        /// <param name="value"></param>
+        public void SetValue(string propertyPath, object value)
         {
             var property = GetProperty(propertyPath);
             if (property != null)
             {
-                property.Item2.SetValue(property.Item1, value);
+                string[] paths = propertyPath.Split('.');
+                var bindingHost = FindBindingHost(paths);
+                if (bindingHost != null)
+                {
+                    bindingHost._immediatePropertyChangeNotificationsToSkipOnce.Add(paths.Last());
+                }
+
+                try
+                {
+                    property.Item2.SetValue(property.Item1, value);
+                }
+                finally
+                {
+                    bindingHost._immediatePropertyChangeNotificationsToSkipOnce.Remove(paths.Last());
+                }
+            }
+        }
+
+        private BindingHost FindBindingHost(string[] paths)
+        {
+            if (paths.Length == 1)
+            {
+                return this;
+            }
+
+            if (_subPropertyBindings.TryGetValue(paths[0], out BindingHost subBindingHost))
+            {
+                return subBindingHost.FindBindingHost(paths.Skip(1).ToArray());
+            }
+            else
+            {
+                return null;
             }
         }
 
