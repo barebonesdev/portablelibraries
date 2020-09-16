@@ -29,24 +29,34 @@ namespace BareMvvm.Core.Binding
                 }
 
                 // Unregister old
-                if (_dataContext is INotifyPropertyChanged && _dataContextPropertyChangedHandler != null)
-                {
-                    (_dataContext as INotifyPropertyChanged).PropertyChanged -= _dataContextPropertyChangedHandler;
-                }
+                UnregisterDataContextListener();
 
                 _dataContext = value;
 
                 // Register new
-                if (value is INotifyPropertyChanged)
-                {
-                    if (_dataContextPropertyChangedHandler == null)
-                    {
-                        _dataContextPropertyChangedHandler = new WeakEventHandler<PropertyChangedEventArgs>(DataContext_PropertyChanged).Handler;
-                    }
-                    (value as INotifyPropertyChanged).PropertyChanged += _dataContextPropertyChangedHandler;
-                }
+                RegisterDataContextListener();
 
                 UpdateAllBindings();
+            }
+        }
+
+        private void UnregisterDataContextListener()
+        {
+            if (_dataContext is INotifyPropertyChanged && _dataContextPropertyChangedHandler != null)
+            {
+                (_dataContext as INotifyPropertyChanged).PropertyChanged -= _dataContextPropertyChangedHandler;
+            }
+        }
+
+        private void RegisterDataContextListener()
+        {
+            if (_dataContext is INotifyPropertyChanged notifyPropertyChanged)
+            {
+                if (_dataContextPropertyChangedHandler == null)
+                {
+                    _dataContextPropertyChangedHandler = new WeakEventHandler<PropertyChangedEventArgs>(DataContext_PropertyChanged).Handler;
+                }
+                notifyPropertyChanged.PropertyChanged += _dataContextPropertyChangedHandler;
             }
         }
 
@@ -392,7 +402,16 @@ namespace BareMvvm.Core.Binding
 
             _subPropertyBindings.Clear();
 
-            DataContext = null;
+            Detach();
+        }
+
+        /// <summary>
+        /// Detaches from DataContext (and sets it to null) but leaves the bindings in place so that if view is added again, when DataContext is set all bindings will be applied.
+        /// </summary>
+        public void Detach()
+        {
+            UnregisterDataContextListener();
+            _dataContext = null;
         }
     }
 }
