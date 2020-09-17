@@ -13,6 +13,8 @@ namespace BareMvvm.Core.Binding
         internal BindingRegistration SubRegistration { get; private set; }
         private string[] _fullPropertyPath;
 
+        private bool IsEmptyRegistration => InternalRegistration == null && SubRegistration == null;
+
         internal BindingRegistration(BindingHost host, string propertyName, BindingHost.InternalBindingRegistration internalRegistration, string[] fullPropertyPath)
         {
             BindingHost = host;
@@ -41,7 +43,7 @@ namespace BareMvvm.Core.Binding
         /// <param name="value"></param>
         public void SetSourceValue(object value, PropertyInfoAndObject preObtainedSourceProperty = null)
         {
-            BindingHost.SetValue(_fullPropertyPath, value, this, preObtainedSourceProperty: preObtainedSourceProperty);
+            BindingHost.SetValue(_fullPropertyPath, value, IsEmptyRegistration ? null : this, preObtainedSourceProperty: preObtainedSourceProperty);
         }
 
         public PropertyInfoAndObject GetSourceProperty()

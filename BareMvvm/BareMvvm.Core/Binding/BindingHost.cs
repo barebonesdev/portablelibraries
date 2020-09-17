@@ -198,6 +198,11 @@ namespace BareMvvm.Core.Binding
             });
         }
 
+        public BindingRegistration GetEmptyRegistration(string propertyPath)
+        {
+            return new BindingRegistration(this, null, internalRegistration: null, propertyPath.Split('.'));
+        }
+
         public BindingRegistration SetBinding(string propertyPath, Action action, bool skipInvokingActionImmediately = false)
         {
             return SetBinding(propertyPath.Split('.'), action, skipInvokingActionImmediately);

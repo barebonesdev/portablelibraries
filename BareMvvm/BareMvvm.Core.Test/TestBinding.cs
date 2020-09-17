@@ -788,5 +788,59 @@ namespace BareMvvm.Core.Test
             Assert.AreEqual(1, className1Executions);
             Assert.AreEqual(2, className2Executions);
         }
+
+        [TestMethod]
+        public void TestEmptyRegistration()
+        {
+            var class1 = new MyClass()
+            {
+                Name = "Math"
+            };
+
+            var task = new MyTask()
+            {
+                Name = "Bookwork",
+                Class = class1
+            };
+
+            var bindingHost = new BindingHost()
+            {
+                DataContext = task
+            };
+
+            int name1Executions = 0;
+            int className1Executions = 0;
+
+
+            var name1Binding = bindingHost.SetBinding<string>("Name", name =>
+            {
+                Assert.AreEqual(task.Name, name);
+                name1Executions++;
+            });
+
+            var className1Binding = bindingHost.SetBinding<string>("Class.Name", name =>
+            {
+                Assert.AreEqual(task.Class.Name, name);
+                className1Executions++;
+            });
+
+            var emptyNameRegistration = bindingHost.GetEmptyRegistration("Name");
+            var emptyClassNameRegistration = bindingHost.GetEmptyRegistration("Class.Name");
+
+            Assert.AreEqual(1, name1Executions);
+            Assert.AreEqual(1, className1Executions);
+
+            emptyNameRegistration.SetSourceValue("Bookwork updated");
+
+            Assert.AreEqual("Bookwork updated", task.Name);
+            Assert.AreEqual(2, name1Executions);
+            Assert.AreEqual(1, className1Executions);
+
+            emptyClassNameRegistration.SetSourceValue("Math updated");
+
+            Assert.AreEqual("Math updated", task.Class.Name);
+            Assert.AreEqual(2, name1Executions);
+            Assert.AreEqual(2, className1Executions);
+        }
     }
 }
