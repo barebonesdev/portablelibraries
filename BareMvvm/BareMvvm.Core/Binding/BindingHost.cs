@@ -415,6 +415,11 @@ namespace BareMvvm.Core.Binding
         /// </summary>
         public void Detach()
         {
+            foreach (var subBinding in _subPropertyBindings.Values)
+            {
+                subBinding.Detach();
+            }
+
             UnregisterDataContextListener();
             _dataContext = null;
         }

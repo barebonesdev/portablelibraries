@@ -1,5 +1,7 @@
 using BareMvvm.Core.Binding;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
+using System.Threading.Tasks;
 using ToolsPortable;
 
 namespace BareMvvm.Core.Test
@@ -841,6 +843,219 @@ namespace BareMvvm.Core.Test
             Assert.AreEqual("Math updated", task.Class.Name);
             Assert.AreEqual(2, name1Executions);
             Assert.AreEqual(2, className1Executions);
+        }
+
+        [TestMethod]
+        public void TestSwappingTask()
+        {
+            var c = new MyClass()
+            {
+                Name = "Math",
+                Color = new byte[] { 93, 25, 13 }
+            };
+
+            var originalTask = new MyTask()
+            {
+                Name = "Original",
+                Class = c
+            };
+
+            var replacedTask = new MyTask()
+            {
+                Name = "Replaced",
+                Class = c
+            };
+
+            var bindingHost = new BindingHost();
+
+            int nameExecutions = 0;
+            int colorExecutions = 0;
+
+            bindingHost.SetBinding<string>("Name", name =>
+            {
+                if (nameExecutions == 0)
+                {
+                    Assert.AreEqual("Original", name);
+                }
+                else
+                {
+                    Assert.AreEqual("Replaced", name);
+                }
+
+                nameExecutions++;
+            });
+
+            bindingHost.SetBinding<byte[]>("Class.Color", color =>
+            {
+                Assert.AreEqual(c.Color, color);
+                colorExecutions++;
+            });
+
+            Assert.AreEqual(0, nameExecutions);
+            Assert.AreEqual(0, colorExecutions);
+
+            bindingHost.DataContext = originalTask;
+
+            Assert.AreEqual(1, nameExecutions);
+            Assert.AreEqual(1, colorExecutions);
+
+            bindingHost.DataContext = replacedTask;
+
+            // Technically the class didn't change, so class bindings shouldn't re-trigger
+            Assert.AreEqual(2, nameExecutions);
+            Assert.AreEqual(1, colorExecutions);
+        }
+
+        [TestMethod]
+        public void TestSwappingTaskWithDetach()
+        {
+            var c = new MyClass()
+            {
+                Name = "Math",
+                Color = new byte[] { 93, 25, 13 }
+            };
+
+            var originalTask = new MyTask()
+            {
+                Name = "Original",
+                Class = c
+            };
+
+            var replacedTask = new MyTask()
+            {
+                Name = "Replaced",
+                Class = c
+            };
+
+            var bindingHost = new BindingHost();
+
+            int nameExecutions = 0;
+            int colorExecutions = 0;
+
+            bindingHost.SetBinding<string>("Name", name =>
+            {
+                if (nameExecutions == 0)
+                {
+                    Assert.AreEqual("Original", name);
+                }
+                else
+                {
+                    Assert.AreEqual("Replaced", name);
+                }
+
+                nameExecutions++;
+            });
+
+            bindingHost.SetBinding<byte[]>("Class.Color", color =>
+            {
+                Assert.AreEqual(c.Color, color);
+                colorExecutions++;
+            });
+
+            Assert.AreEqual(0, nameExecutions);
+            Assert.AreEqual(0, colorExecutions);
+
+            bindingHost.DataContext = originalTask;
+
+            Assert.AreEqual(1, nameExecutions);
+            Assert.AreEqual(1, colorExecutions);
+
+            // Editing class color should trigger
+            c.Color = new byte[] { 15, 30, 25 };
+            Assert.AreEqual(1, nameExecutions);
+            Assert.AreEqual(2, colorExecutions);
+
+            // Detach (for example, view was removed/recycled)
+            bindingHost.Detach();
+
+            originalTask.Name = "Edited";
+            c.Color = new byte[] { 90, 30, 25 };
+
+            // Shouldn't have triggered anything
+            Assert.AreEqual(1, nameExecutions);
+            Assert.AreEqual(2, colorExecutions);
+
+            // Now view added with the new task
+            bindingHost.DataContext = replacedTask;
+
+            // Even though class itself didn't change, properties of the class might have changed
+            // while we were detached (as they did)... thus we need to retrigger those too.
+            Assert.AreEqual(2, nameExecutions);
+            Assert.AreEqual(3, colorExecutions);
+        }
+
+        [TestMethod]
+        public void TestSwappingTaskAndClass()
+        {
+            var c1 = new MyClass()
+            {
+                Name = "Math",
+                Color = new byte[] { 93, 25, 13 }
+            };
+
+            var c2 = new MyClass()
+            {
+                Name = "Spanish",
+                Color = new byte[] { 80, 40, 20 }
+            };
+
+            var originalTask = new MyTask()
+            {
+                Name = "Original",
+                Class = c1
+            };
+
+            var replacedTask = new MyTask()
+            {
+                Name = "Replaced",
+                Class = c2
+            };
+
+            var bindingHost = new BindingHost();
+
+            int nameExecutions = 0;
+            int colorExecutions = 0;
+
+            bindingHost.SetBinding<string>("Name", name =>
+            {
+                if (nameExecutions == 0)
+                {
+                    Assert.AreEqual("Original", name);
+                }
+                else
+                {
+                    Assert.AreEqual("Replaced", name);
+                }
+
+                nameExecutions++;
+            });
+
+            bindingHost.SetBinding<byte[]>("Class.Color", color =>
+            {
+                if (colorExecutions == 0)
+                {
+                    Assert.IsTrue(new byte[] { 93, 25, 13 }.SequenceEqual(color));
+                }
+                else
+                {
+                    Assert.IsTrue(new byte[] { 80, 40, 20 }.SequenceEqual(color));
+                }
+
+                colorExecutions++;
+            });
+
+            Assert.AreEqual(0, nameExecutions);
+            Assert.AreEqual(0, colorExecutions);
+
+            bindingHost.DataContext = originalTask;
+
+            Assert.AreEqual(1, nameExecutions);
+            Assert.AreEqual(1, colorExecutions);
+
+            bindingHost.DataContext = replacedTask;
+
+            Assert.AreEqual(2, nameExecutions);
+            Assert.AreEqual(2, colorExecutions);
         }
     }
 }
