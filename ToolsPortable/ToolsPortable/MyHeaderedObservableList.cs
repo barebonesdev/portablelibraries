@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,8 +12,20 @@ namespace ToolsPortable
     {
         private Func<TItem, THeaderItem> _itemToHeaderFunc;
         private IMyObservableReadOnlyList<TItem> _source;
+        private PropertyInfo _collapsedHeaderProperty;
+        private Dictionary<THeaderItem, List<TItem>> _collapsedHeaders = new Dictionary<THeaderItem, List<TItem>>();
+        
         public MyHeaderedObservableList(IMyObservableReadOnlyList<TItem> source, Func<TItem, THeaderItem> itemToHeaderFunc)
         {
+            if (typeof(THeaderItem).GetTypeInfo().ImplementedInterfaces.Contains(typeof(INotifyPropertyChanged)))
+            {
+                var prop = typeof(THeaderItem).GetRuntimeProperty("Collapsed");
+                if (prop.PropertyType == typeof(bool))
+                {
+                    _collapsedHeaderProperty = prop;
+                }
+            }
+
             _itemToHeaderFunc = itemToHeaderFunc;
             _source = source;
             source.CollectionChanged += Source_CollectionChanged;
@@ -20,6 +34,21 @@ namespace ToolsPortable
 
         private void Source_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
+            var collapsedHeaders = _collapsedHeaders.Keys.ToArray();
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Reset)
+            {
+                collapsedHeaders = new THeaderItem[0];
+            }
+
+            if (collapsedHeaders.Length > 0)
+            {
+                // First we need to reset all to expanded so we can add properly
+                foreach (var header in collapsedHeaders)
+                {
+                    _collapsedHeaderProperty.SetValue(header, false);
+                }
+            }
+
             switch (e.Action)
             {
                 case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
@@ -41,9 +70,27 @@ namespace ToolsPortable
                     break;
 
                 case System.Collections.Specialized.NotifyCollectionChangedAction.Reset:
+                    if (_collapsedHeaderProperty != null)
+                    {
+                        foreach (var header in this.OfType<THeaderItem>())
+                        {
+                            (header as INotifyPropertyChanged).PropertyChanged -= Header_PropertyChanged;
+                        }
+
+                        _collapsedHeaders.Clear();
+                    }
                     this.Clear();
                     AddItems(0, sender as IEnumerable<TItem>);
                     break;
+            }
+
+            if (collapsedHeaders.Length > 0)
+            {
+                // And then we re-collapse headers after modifications were made
+                foreach (var header in collapsedHeaders)
+                {
+                    _collapsedHeaderProperty.SetValue(header, true);
+                }
             }
         }
 
@@ -54,12 +101,17 @@ namespace ToolsPortable
             for (int i = 0; i < countOfItems; i++)
             {
                 // If the previous is a header, and there's no next item
-                if (this.ElementAtOrDefault(adaptedIndex - 1) is THeaderItem && !(this.ElementAtOrDefault(adaptedIndex + 1) is TItem))
+                if (this.ElementAtOrDefault(adaptedIndex - 1) is THeaderItem headerItem && !(this.ElementAtOrDefault(adaptedIndex + 1) is TItem))
                 {
                     // That means we're removing the last item from that group
                     // So we need to remove its header
                     this.RemoveAt(adaptedIndex - 1);
                     adaptedIndex--;
+
+                    if (_collapsedHeaderProperty != null && headerItem is INotifyPropertyChanged headerPropertyChanged)
+                    {
+                        headerPropertyChanged.PropertyChanged -= Header_PropertyChanged;
+                    }
                 }
 
                 this.RemoveAt(adaptedIndex);
@@ -165,6 +217,12 @@ namespace ToolsPortable
                     if (!foundExistingGroup)
                     {
                         base.Insert(adaptedIndex, thisItemHeader);
+
+                        if (_collapsedHeaderProperty != null && thisItemHeader is INotifyPropertyChanged headerPropertyChanged)
+                        {
+                            headerPropertyChanged.PropertyChanged += Header_PropertyChanged;
+                        }
+
                         currHeader = new HeaderForComparison(thisItemHeader);
                         adaptedIndex++;
                     }
@@ -175,6 +233,43 @@ namespace ToolsPortable
                 // Add the item
                 base.Insert(adaptedIndex, item);
                 adaptedIndex++;
+            }
+        }
+
+        private void Header_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Collapsed")
+            {
+                THeaderItem header = (THeaderItem)sender;
+
+                // If collapsed
+                if ((bool)_collapsedHeaderProperty.GetValue(header))
+                {
+                    if (!_collapsedHeaders.ContainsKey(header))
+                    {
+                        int headerIndex = IndexOf(header);
+                        var itemsUnderHeader = this.Skip(headerIndex + 1).TakeWhile(i => i is TItem).OfType<TItem>().ToList();
+                        _collapsedHeaders[header] = itemsUnderHeader;
+                        for (int i = 0; i < itemsUnderHeader.Count; i++)
+                        {
+                            RemoveAt(headerIndex + 1);
+                        }
+                    }
+                }
+
+                // Otherwise if expanded
+                else
+                {
+                    if (_collapsedHeaders.TryGetValue(header, out List<TItem> itemsUnderHeader))
+                    {
+                        int headerIndex = IndexOf(header);
+                        for (int i = 0; i < itemsUnderHeader.Count; i++)
+                        {
+                            Insert(headerIndex + 1 + i, itemsUnderHeader[i]);
+                        }
+                        _collapsedHeaders.Remove(header);
+                    }
+                }
             }
         }
 
@@ -232,9 +327,16 @@ namespace ToolsPortable
                 if (i >= Count)
                     return i;
 
-                if (this[i] is THeaderItem)
+                if (this[i] is THeaderItem header)
                 {
-                    stop++;
+                    if (_collapsedHeaders.TryGetValue(header, out List<TItem> collapsedItems))
+                    {
+                        stop += 1 - collapsedItems.Count;
+                    }
+                    else
+                    {
+                        stop++;
+                    }
                 }
 
                 if (i == stop)
