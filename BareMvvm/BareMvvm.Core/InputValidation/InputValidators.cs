@@ -61,5 +61,10 @@ namespace BareMvvm.Core
         {
             return _validate(text);
         }
+
+        public static string GetInvalidCharactersError(char[] invalidCharacters)
+        {
+            return string.Format(Resources.InvalidInputs_InvalidCharacters, string.Join(", ", invalidCharacters));
+        }
     }
 }

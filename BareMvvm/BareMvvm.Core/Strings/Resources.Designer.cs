@@ -115,6 +115,15 @@ namespace BareMvvm.Core.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid characters: {0}.
+        /// </summary>
+        internal static string InvalidInputs_InvalidCharacters {
+            get {
+                return ResourceManager.GetString("InvalidInputs_InvalidCharacters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Required fields are missing or invalid.
         /// </summary>
         internal static string InvalidInputs_Title {

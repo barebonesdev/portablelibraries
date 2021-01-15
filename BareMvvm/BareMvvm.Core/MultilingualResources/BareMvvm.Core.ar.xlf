@@ -34,6 +34,10 @@
           <source>Too short. Must be at least {0} characters.</source>
           <target state="final" state-qualifier="mt-suggestion">قصير جداً يجب أن يكون {0} حرفاً على الأقل.</target>
         </trans-unit>
+        <trans-unit id="InvalidInputs_InvalidCharacters" translate="yes" xml:space="preserve">
+          <source>Invalid characters: {0}</source>
+          <target state="final" state-qualifier="mt-suggestion">أحرف غير صحيحة: {0}</target>
+        </trans-unit>
       </group>
     </body>
   </file>

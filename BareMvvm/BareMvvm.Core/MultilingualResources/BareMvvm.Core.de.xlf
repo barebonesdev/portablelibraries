@@ -34,6 +34,10 @@
           <source>Too short. Must be at least {0} characters.</source>
           <target state="final" state-qualifier="mt-suggestion">Zu kurz. Muss mindestens {0} Zeichen sein.</target>
         </trans-unit>
+        <trans-unit id="InvalidInputs_InvalidCharacters" translate="yes" xml:space="preserve">
+          <source>Invalid characters: {0}</source>
+          <target state="final" state-qualifier="mt-suggestion">Ungültige Zeichen: {0}</target>
+        </trans-unit>
       </group>
     </body>
   </file>
