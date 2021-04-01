@@ -86,15 +86,34 @@ namespace BareMvvm.Core.ViewModels
         public bool IsCurrentNavigatedPage { get; private set; }
         public bool IsFocused { get; private set; }
 
-        private WeakReference _nativeView;
-        public object GetNativeView()
+        private WeakReference _cachedNativeView;
+        /// <summary>
+        /// This is after any conversion had to occur (should be used to re-display a cached view).
+        /// </summary>
+        /// <returns></returns>
+        public object GetCachedNativeView()
         {
-            return _nativeView?.Target;
+            return _cachedNativeView?.Target;
         }
 
-        public void SetNativeView(object value)
+        private WeakReference _originalNativeView;
+        /// <summary>
+        /// This is the original view type in the case of mixed languages where we had to convert to Forms or vice versa
+        /// </summary>
+        /// <returns></returns>
+        public object GetOriginalNativeView()
         {
-            _nativeView = new WeakReference(value);
+            return _originalNativeView?.Target;
+        }
+
+        public void SetCachedNativeView(object value)
+        {
+            _cachedNativeView = new WeakReference(value);
+        }
+
+        public void SetOriginalNativeView(object value)
+        {
+            _originalNativeView = new WeakReference(value);
         }
 
         public BaseViewModel(BaseViewModel parent)

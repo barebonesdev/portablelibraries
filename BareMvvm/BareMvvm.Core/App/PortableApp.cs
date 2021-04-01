@@ -1,6 +1,7 @@
 ﻿using BareMvvm.Core.Windows;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -46,7 +47,7 @@ namespace BareMvvm.Core.App
             Windows.Remove(window);
         }
 
-        public List<PortableAppWindow> Windows { get; private set; } = new List<PortableAppWindow>();
+        public ObservableCollection<PortableAppWindow> Windows { get; private set; } = new ObservableCollection<PortableAppWindow>();
 
         public PortableAppWindow GetCurrentWindow()
         {
