@@ -47,7 +47,7 @@ namespace BareMvvm.Core.ViewModels
         public IList<BaseViewModel> BackStack { get; set; } = new ObservableCollection<BaseViewModel>();
 
         private BaseViewModel _content;
-        public BaseViewModel Content
+        public new BaseViewModel Content
         {
             get { return _content; }
             private set
