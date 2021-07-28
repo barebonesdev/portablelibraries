@@ -69,8 +69,18 @@ namespace ToolsPortable
 
             foreach (var refItem in _list)
             {
-                T item;
-                if (refItem.TryGetTarget(out item))
+                T item = default(T);
+                bool obtained = false;
+                try
+                {
+                    if (refItem.TryGetTarget(out item))
+                    {
+                        obtained = true;
+                    }
+                }
+                catch { }
+
+                if (obtained)
                 {
                     yield return item;
                 }
