@@ -10,6 +10,8 @@ namespace ToolsPortable
     {
         public string Content { get; private set; }
         public string Title { get; private set; }
+        public string PositiveText { get; private set; }
+        public string NegativeText { get; private set; }
 
         public PortableMessageDialog(string content)
         {
@@ -20,6 +22,22 @@ namespace ToolsPortable
         {
             Content = content;
             Title = title;
+        }
+
+        public PortableMessageDialog(string content, string title, string positiveText, string negativeText)
+        {
+            Content = content;
+            Title = title;
+            PositiveText = positiveText;
+            NegativeText = negativeText;
+        }
+
+        public Task<bool> ShowForResultAsync()
+        {
+            if (Extension != null)
+                return Extension(this);
+
+            throw new NotImplementedException();
         }
 
         public Task ShowAsync()
@@ -39,6 +57,6 @@ namespace ToolsPortable
             catch { }
         }
 
-        public static Func<PortableMessageDialog, Task> Extension;
+        public static Func<PortableMessageDialog, Task<bool>> Extension;
     }
 }
