@@ -103,12 +103,18 @@ namespace ToolsPortable
         {
             get { return new _abbreviatedDayNamesClass(); }
         }
-        
 
 
+
+        private static Lazy<CultureInfo> USCulture = new Lazy<CultureInfo>(() => new CultureInfo("en-US"));
         public static string GetDayName(DayOfWeek dayOfWeek)
         {
-            return DateTimeFormatInfo.CurrentInfo.GetDayName(dayOfWeek);
+            var answer = DateTimeFormatInfo.CurrentInfo.GetDayName(dayOfWeek);
+            if (answer == "")
+            {
+                return DateTimeFormatInfo.GetInstance(USCulture.Value).GetDayName(dayOfWeek);
+            }
+            return answer;
         }
 
         public static string GetAbbreviatedDayName(DayOfWeek dayOfWeek)

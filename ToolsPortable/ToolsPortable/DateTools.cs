@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -146,7 +147,7 @@ namespace ToolsPortable
 
         public static string ToLocalizedString(DayOfWeek day)
         {
-            return Last(day).ToString("dddd");
+            return LocalizedDateTimeStrings.GetDayName(day);
         }
 
         public static int DaysAhead(DayOfWeek dayInFuture, DayOfWeek dayNow)
