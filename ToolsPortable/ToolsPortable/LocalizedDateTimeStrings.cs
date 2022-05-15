@@ -109,6 +109,11 @@ namespace ToolsPortable
         private static Lazy<CultureInfo> USCulture = new Lazy<CultureInfo>(() => new CultureInfo("en-US"));
         public static string GetDayName(DayOfWeek dayOfWeek)
         {
+            if ((int)dayOfWeek < 0 || (int)dayOfWeek > 6)
+            {
+                dayOfWeek = (DayOfWeek)((int)dayOfWeek % 7);
+            }
+
             var answer = DateTimeFormatInfo.CurrentInfo.GetDayName(dayOfWeek);
             if (answer == "")
             {
