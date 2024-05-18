@@ -9,15 +9,6 @@ namespace ToolsPortable
 {
     public class WeakEventHandler : WeakEventHandler<EventArgs>
     {
-#if ANDROID && DEBUG
-        public static Action ObjectDisposedAction { get; set; }
-
-        public static void InvokeObjectDisposedAction()
-        {
-            ObjectDisposedAction?.Invoke();
-        }
-#endif
-
         public WeakEventHandler(EventHandler<EventArgs> callback) : base(callback) { }
     }
 
@@ -47,33 +38,8 @@ namespace ToolsPortable
                 object target = _targetReference.Target;
                 if (target != null)
                 {
-#if ANDROID
-                    try
-                    {
-#endif
-                        _methodInfo.Invoke(target, new object[] { sender, e });
-                        return;
-#if ANDROID
-                    }
-
-                    catch (Exception ex)
-                    {
-                        // Sometimes it can be contained in a TargetInvocationException, and I think the ObjectDisposed is the inner exception.
-                        // We'll just check all exception types.
-                        // On Android, this means the item ultimately should be garbaged collected, but it does it lazily.
-                        // The Java object has already been collected. So we'll let the cleanup logic execute below.
-                        if (!ContainsObjectDisposedException(ex))
-                        {
-                            throw ex;
-                        }
-#if DEBUG
-                        else
-                        {
-                            WeakEventHandler.ObjectDisposedAction();
-                        }
-#endif
-                    }
-#endif
+                    _methodInfo.Invoke(target, new object[] { sender, e });
+                    return;
                 }
             }
 

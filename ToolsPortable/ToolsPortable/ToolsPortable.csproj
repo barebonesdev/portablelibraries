@@ -1,14 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard1.3</TargetFramework>
-    <Configurations>Debug;Release;Debug (Android);Release (Android)</Configurations>
+    <Configurations>Debug;Release;</Configurations>
     <NeutralLanguage>en-US</NeutralLanguage>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (Android)|AnyCPU'">
-    <DefineConstants>TRACE;ANDROID</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug (Android)|AnyCPU'">
-    <DefineConstants>DEBUG;TRACE;ANDROID</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
