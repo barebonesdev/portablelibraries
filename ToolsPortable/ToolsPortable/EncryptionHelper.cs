@@ -1,16 +1,13 @@
-﻿using PCLCrypto;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ToolsPortable
 {
-    /// <summary>
-    /// Note that you must add the PCLCrypto NuGet library to your core hosting platform app, so that the platform-specific implementation is loaded.
-    /// </summary>
     public class EncryptionHelper
     {
         /// <summary>
@@ -40,7 +37,7 @@ namespace ToolsPortable
 
         public static string Sha256(string str)
         {
-            return hash(str, HashAlgorithm.Sha256);
+            return hashSha256(getBytes(str));
         }
 
         private static byte[] getBytes(string str)
@@ -56,45 +53,37 @@ namespace ToolsPortable
             return bytes;
         }
 
-        private static string hash(string str, HashAlgorithm algorithmName)
+        private static string hashSha256(byte[] bytes)
         {
-            return hash(getBytes(str), algorithmName);
+            using (var algorithm = System.Security.Cryptography.SHA256.Create())
+            {
+                byte[] hash = algorithm.ComputeHash(bytes);
+                return ConvertToHex(hash);
+            }
         }
 
-        private static string hash(Stream stream, HashAlgorithm algorithmName)
+        private static string hashSha1(byte[] bytes)
         {
-            return hash(getBytes(stream), algorithmName);
-        }
-
-        private static string hash(byte[] bytes, HashAlgorithm algorithmName)
-        {
-            //grab the algoritm
-            IHashAlgorithmProvider algorithm = WinRTCrypto.HashAlgorithmProvider.OpenAlgorithm(algorithmName);
-
-            //hash the data
-            byte[] hash = algorithm.HashData(bytes);
-
-            //verify that hash succeeded
-            if (hash.Length != algorithm.HashLength)
-                throw new Exception("There was an error creating the hash.");
-
-            //convert to string
-            return WinRTCrypto.CryptographicBuffer.EncodeToHexString(hash);
+            using (var algorithm = System.Security.Cryptography.SHA1.Create())
+            {
+                byte[] hash = algorithm.ComputeHash(bytes);
+                return ConvertToHex(hash);
+            }
         }
 
         public static string Sha256(byte[] bytes)
         {
-            return hash(bytes, HashAlgorithm.Sha256);
+            return hashSha256(bytes);
         }
 
         public static string Sha1(byte[] bytes)
         {
-            return hash(bytes, HashAlgorithm.Sha1);
+            return hashSha1(bytes);
         }
 
         public static string Sha1(Stream stream)
         {
-            return hash(stream, HashAlgorithm.Sha1);
+            return hashSha1(getBytes(stream));
         }
     }
 }

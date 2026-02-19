@@ -9,7 +9,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-    <PackageReference Include="PCLCrypto" Version="2.1.32-alpha" />
   </ItemGroup>
 
 </Project>
