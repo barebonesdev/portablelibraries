@@ -38,7 +38,18 @@ namespace ToolsPortable
                 object target = _targetReference.Target;
                 if (target != null)
                 {
-                    _methodInfo.Invoke(target, new object[] { sender, e });
+                    try
+                    {
+                        _methodInfo.Invoke(target, new object[] { sender, e });
+                    }
+                    catch (TargetInvocationException ex) when (ContainsObjectDisposedException(ex))
+                    {
+                        // Target's underlying object (e.g. Android Java peer) has been disposed.
+                        // Treat as if the target is no longer alive and clean up.
+                        _targetReference = null;
+                        _methodInfo = null;
+                        ExceptionHelper.ReportHandledException(ex);
+                    }
                     return;
                 }
             }
