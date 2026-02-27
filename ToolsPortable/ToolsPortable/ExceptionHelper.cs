@@ -67,8 +67,10 @@ namespace ToolsPortable
         {
             // Ignore HttpRequestException from telemetry since that just means offline
             // WebException means things like DNS name resolution error, connection timeout, network unreachable, etc
+            // SocketException means things like "No such host is known"
             // 0x80072EFF means some internal stream and file access stuff failed, not very common but nothing I can do
             return ex is System.Net.Http.HttpRequestException
+                || ex is System.Net.Sockets.SocketException
                 || ExceptionHelper.IsHResult(ex, 0x80072EFF);
         }
 
