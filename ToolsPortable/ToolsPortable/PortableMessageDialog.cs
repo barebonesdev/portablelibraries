@@ -24,6 +24,13 @@ namespace ToolsPortable
             Title = title;
         }
 
+        public PortableMessageDialog(string content, string title, string positiveText)
+        {
+            Content = content;
+            Title = title;
+            PositiveText = positiveText;
+        }
+
         public PortableMessageDialog(string content, string title, string positiveText, string negativeText)
         {
             Content = content;
