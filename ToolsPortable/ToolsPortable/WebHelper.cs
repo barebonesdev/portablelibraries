@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -37,14 +36,14 @@ namespace ToolsPortable
         /// <param name="postData"></param>
         /// <param name="apiKey"></param>
         /// <returns></returns>
-        public static async Task<T> Download<K, T>(string url, K postData, ApiKeyCombo apiKey)
+        public static async Task<T> Download<K, T>(string url, K postData, ApiKeyCombo apiKey, Func<K, string> serializeRequest, Func<string, T> deserializeResponse)
         {
-            return await Download<K, T>(url, postData, apiKey, CancellationToken.None);
+            return await Download(url, postData, apiKey, serializeRequest, deserializeResponse, CancellationToken.None);
         }
 
-        public static async Task<T> Download<K, T>(string url, K postData, ApiKeyCombo apiKey, CancellationToken cancellationToken)
+        public static async Task<T> Download<K, T>(string url, K postData, ApiKeyCombo apiKey, Func<K, string> serializeRequest, Func<string, T> deserializeResponse, CancellationToken cancellationToken)
         {
-            return await new WebHelper().DownloadWithCancel<K, T>(url, postData, apiKey, cancellationToken);
+            return await new WebHelper().DownloadWithCancel(url, postData, apiKey, serializeRequest, deserializeResponse, cancellationToken);
         }
 
         /// <summary>
@@ -56,12 +55,12 @@ namespace ToolsPortable
         /// <param name="postData"></param>
         /// <param name="apiKey"></param>
         /// <returns></returns>
-        public async Task<T> DownloadWithCancel<K, T>(string url, K postData, ApiKeyCombo apiKey)
+        public async Task<T> DownloadWithCancel<K, T>(string url, K postData, ApiKeyCombo apiKey, Func<K, string> serializeRequest, Func<string, T> deserializeResponse)
         {
-            return await DownloadWithCancel<K, T>(url, postData, apiKey, CancellationToken.None);
+            return await DownloadWithCancel(url, postData, apiKey, serializeRequest, deserializeResponse, CancellationToken.None);
         }
 
-        public async Task<T> DownloadWithCancel<K, T>(string url, K postData, ApiKeyCombo apiKey, CancellationToken cancellationToken)
+        public async Task<T> DownloadWithCancel<K, T>(string url, K postData, ApiKeyCombo apiKey, Func<K, string> serializeRequest, Func<string, T> deserializeResponse, CancellationToken cancellationToken)
         {
             if (IsCancelled)
                 return default(T);
@@ -72,7 +71,7 @@ namespace ToolsPortable
             {
                 if (postData != null)
                 {
-                    request.Content = GeneratePostData(request, postData, apiKey);
+                    request.Content = GeneratePostData(request, postData, apiKey, serializeRequest);
                     
                     cancellationToken.ThrowIfCancellationRequested();
                 }
@@ -106,12 +105,12 @@ namespace ToolsPortable
                         return default(T);
 
 
-                    return readResponse<T>(responseStream);
+                    return readResponse(responseStream, deserializeResponse);
                 }
             }
         }
 
-        private static T readResponse<T>(Stream response)
+        private static T readResponse<T>(Stream response, Func<string, T> deserializeResponse)
         {
             if (typeof(T) == typeof(Stream))
             {
@@ -148,11 +147,11 @@ namespace ToolsPortable
 
                         try
                         {
-                            return JsonConvert.DeserializeObject<T>(text);
+                            return deserializeResponse(text);
                         }
-                        catch (JsonReaderException jsonReaderException)
+                        catch (Exception exception)
                         {
-                            throw new JsonReaderException($"{jsonReaderException.Message} Response text: {TrimString(text, 200)}", jsonReaderException);
+                            throw new InvalidDataException($"{exception.Message} Response text: {TrimString(text, 200)}", exception);
                         }
                     }
 
@@ -184,7 +183,7 @@ namespace ToolsPortable
             return str;
         }
 
-        private static StreamContent GeneratePostData<K>(HttpRequestMessage request, K postData, ApiKeyCombo apiKey)
+        private static StreamContent GeneratePostData<K>(HttpRequestMessage request, K postData, ApiKeyCombo apiKey, Func<K, string> serializeRequest)
         {
             Stream postStream = new MemoryStream();
             string hashedData = null;
@@ -199,7 +198,7 @@ namespace ToolsPortable
 
                 else
                 {
-                    serialize(postStream, postData);
+                    serialize(postStream, postData, serializeRequest);
                     postStream.Position = 0;
                 }
 
@@ -235,10 +234,10 @@ namespace ToolsPortable
             return content;
         }
 
-        private static void serialize(Stream stream, object data)
+        private static void serialize<K>(Stream stream, K data, Func<K, string> serializeRequest)
         {
             StreamWriter writer = new StreamWriter(stream);
-            new JsonSerializer().Serialize(writer, data);
+            writer.Write(serializeRequest(data));
             writer.Flush();
 
 #if DEBUG
