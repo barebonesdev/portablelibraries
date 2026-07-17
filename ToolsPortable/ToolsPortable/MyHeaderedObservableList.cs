@@ -2,30 +2,24 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ToolsPortable
 {
+    public interface ICollapsibleHeader : INotifyPropertyChanged
+    {
+        bool Collapsed { get; set; }
+    }
+
     public class MyHeaderedObservableList<TItem, THeaderItem> : MyObservableList<object>
     {
         private Func<TItem, THeaderItem> _itemToHeaderFunc;
         private IMyObservableReadOnlyList<TItem> _source;
-        private PropertyInfo _collapsedHeaderProperty;
         private Dictionary<THeaderItem, List<TItem>> _collapsedHeaders = new Dictionary<THeaderItem, List<TItem>>();
         
         public MyHeaderedObservableList(IMyObservableReadOnlyList<TItem> source, Func<TItem, THeaderItem> itemToHeaderFunc)
         {
-            if (typeof(THeaderItem).GetTypeInfo().ImplementedInterfaces.Contains(typeof(INotifyPropertyChanged)))
-            {
-                var prop = typeof(THeaderItem).GetRuntimeProperty("Collapsed");
-                if (prop.PropertyType == typeof(bool))
-                {
-                    _collapsedHeaderProperty = prop;
-                }
-            }
-
             _itemToHeaderFunc = itemToHeaderFunc;
             _source = source;
             source.CollectionChanged += Source_CollectionChanged;
@@ -45,7 +39,7 @@ namespace ToolsPortable
                 // First we need to reset all to expanded so we can add properly
                 foreach (var header in collapsedHeaders)
                 {
-                    _collapsedHeaderProperty.SetValue(header, false);
+                    ((ICollapsibleHeader)header).Collapsed = false;
                 }
             }
 
@@ -70,15 +64,11 @@ namespace ToolsPortable
                     break;
 
                 case System.Collections.Specialized.NotifyCollectionChangedAction.Reset:
-                    if (_collapsedHeaderProperty != null)
+                    foreach (var header in this.OfType<ICollapsibleHeader>())
                     {
-                        foreach (var header in this.OfType<THeaderItem>())
-                        {
-                            (header as INotifyPropertyChanged).PropertyChanged -= Header_PropertyChanged;
-                        }
-
-                        _collapsedHeaders.Clear();
+                        header.PropertyChanged -= Header_PropertyChanged;
                     }
+                    _collapsedHeaders.Clear();
                     this.Clear();
                     AddItems(0, sender as IEnumerable<TItem>);
                     break;
@@ -89,7 +79,7 @@ namespace ToolsPortable
                 // And then we re-collapse headers after modifications were made
                 foreach (var header in collapsedHeaders)
                 {
-                    _collapsedHeaderProperty.SetValue(header, true);
+                    ((ICollapsibleHeader)header).Collapsed = true;
                 }
             }
         }
@@ -108,9 +98,9 @@ namespace ToolsPortable
                     this.RemoveAt(adaptedIndex - 1);
                     adaptedIndex--;
 
-                    if (_collapsedHeaderProperty != null && headerItem is INotifyPropertyChanged headerPropertyChanged)
+                    if (headerItem is ICollapsibleHeader collapsibleHeader)
                     {
-                        headerPropertyChanged.PropertyChanged -= Header_PropertyChanged;
+                        collapsibleHeader.PropertyChanged -= Header_PropertyChanged;
                     }
                 }
 
@@ -218,9 +208,9 @@ namespace ToolsPortable
                     {
                         base.Insert(adaptedIndex, thisItemHeader);
 
-                        if (_collapsedHeaderProperty != null && thisItemHeader is INotifyPropertyChanged headerPropertyChanged)
+                        if (thisItemHeader is ICollapsibleHeader collapsibleHeader)
                         {
-                            headerPropertyChanged.PropertyChanged += Header_PropertyChanged;
+                            collapsibleHeader.PropertyChanged += Header_PropertyChanged;
                         }
 
                         currHeader = new HeaderForComparison(thisItemHeader);
@@ -238,12 +228,12 @@ namespace ToolsPortable
 
         private void Header_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "Collapsed")
+            if (e.PropertyName == nameof(ICollapsibleHeader.Collapsed) && sender is ICollapsibleHeader collapsibleHeader)
             {
                 THeaderItem header = (THeaderItem)sender;
 
                 // If collapsed
-                if ((bool)_collapsedHeaderProperty.GetValue(header))
+                if (collapsibleHeader.Collapsed)
                 {
                     if (!_collapsedHeaders.ContainsKey(header))
                     {
