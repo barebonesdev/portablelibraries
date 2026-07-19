@@ -15,10 +15,10 @@ namespace ToolsPortable
     public class MyHeaderedObservableList<TItem, THeaderItem> : MyObservableList<object>
     {
         private Func<TItem, THeaderItem> _itemToHeaderFunc;
-        private IMyObservableReadOnlyList<TItem> _source;
+        private MyObservableList<TItem> _source;
         private Dictionary<THeaderItem, List<TItem>> _collapsedHeaders = new Dictionary<THeaderItem, List<TItem>>();
         
-        public MyHeaderedObservableList(IMyObservableReadOnlyList<TItem> source, Func<TItem, THeaderItem> itemToHeaderFunc)
+        public MyHeaderedObservableList(MyObservableList<TItem> source, Func<TItem, THeaderItem> itemToHeaderFunc)
         {
             _itemToHeaderFunc = itemToHeaderFunc;
             _source = source;
@@ -339,7 +339,7 @@ namespace ToolsPortable
 
     public static class MyHeaderedObservableListExtensions
     {
-        public static MyHeaderedObservableList<TItem, THeaderItem> ToHeaderedList<TItem, THeaderItem>(this IMyObservableReadOnlyList<TItem> source, Func<TItem, THeaderItem> itemToHeaderFunc)
+        public static MyHeaderedObservableList<TItem, THeaderItem> ToHeaderedList<TItem, THeaderItem>(this MyObservableList<TItem> source, Func<TItem, THeaderItem> itemToHeaderFunc)
         {
             return new MyHeaderedObservableList<TItem, THeaderItem>(source, itemToHeaderFunc);
         }

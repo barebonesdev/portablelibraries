@@ -11,7 +11,7 @@ using System.Text;
 namespace ToolsPortable
 {
     [CollectionDataContract(Namespace = "http://schemas.datacontract.org/2004/07/ToolsUniversal")]
-    public class MyObservableList<T> : ObservableCollection<T>, IMyList<T>, IMyObservableReadOnlyList<T>
+    public class MyObservableList<T> : ObservableCollection<T>
     {
         public IFilter<T> Filter { get; set; }
 
@@ -297,14 +297,9 @@ namespace ToolsPortable
             return Sublist(new FilterUsingFunction(filter));
         }
 
-        public IMyObservableReadOnlyList<TFinal> OfTypeObservable<TFinal>() where TFinal : T
+        public MyObservableOfTypeList<T, TFinal> OfTypeObservable<TFinal>() where TFinal : T
         {
             return new MyObservableOfTypeList<T, TFinal>(this);
-        }
-
-        public IMyObservableReadOnlyList<TFinal> Cast<TFinal>() where TFinal : T
-        {
-            return new MyObservableCastedList<T, TFinal>(this);
         }
 
         /// <summary>
