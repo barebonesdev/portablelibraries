@@ -111,11 +111,10 @@ namespace BareMvvm.Core.Binding
                 {
                     a.Invoke();
                 }
-                catch
-#if DEBUG
-                (Exception ex)
-#endif
+                catch (Exception ex)
                 {
+                    // Previously swallowed silently in Release, making binding failures invisible (no crash, no update, no log).
+                    ExceptionHelper.ReportHandledException(ex);
 #if DEBUG
                     Debug.WriteLine("Failed to update binding: " + ex);
                     if (Debugger.IsAttached)
