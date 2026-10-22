@@ -42,6 +42,29 @@ namespace ToolsPortable
             return Color.FromArgb(r, g, b);
         }
 
+        /// <summary>
+        /// Lightens (positive) or darkens (negative) by blending toward white or black, preserving the color's
+        /// channel proportions. Better than HSL for near-white/near-black colors, where HSL saturation is exaggerated.
+        /// </summary>
+        public static Color AdjustLightnessBlend(Color color, int amount)
+        {
+            if (amount > 0)
+            {
+                return Color.FromArgb(
+                    color.A,
+                    Clamp(color.R + amount, 0, 255),
+                    Clamp(color.G + amount, 0, 255),
+                    Clamp(color.B + amount, 0, 255));
+            }
+
+            // Darkening weights toward keeping slightly more blue
+            return Color.FromArgb(
+                color.A,
+                Clamp(color.R + (int)Math.Round(amount * 1.6), 0, 255),
+                Clamp(color.G + (int)Math.Round(amount * 1.1), 0, 255),
+                Clamp(color.B + (int)Math.Round(amount * 0.6), 0, 255));
+        }
+
         internal static void RgbToHsl(int r, int g, int b, out double h, out double s, out double l)
         {
             double rd = r / 255.0;
