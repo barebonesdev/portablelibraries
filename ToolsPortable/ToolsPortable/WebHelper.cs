@@ -207,7 +207,7 @@ namespace ToolsPortable
                 {
                     // Turn it into bytes
                     byte[] bytes = new byte[postStream.Length];
-                    postStream.Read(bytes, 0, bytes.Length);
+                    postStream.ReadExactly(bytes);
                     postStream.Position = 0;
 
                     //hash the bytes, then hash ApiKey + Bytes

@@ -48,7 +48,7 @@ namespace ToolsPortable
         private static byte[] getBytes(Stream stream)
         {
             byte[] bytes = new byte[stream.Length];
-            stream.Read(bytes, 0, bytes.Length);
+            stream.ReadExactly(bytes);
 
             return bytes;
         }
